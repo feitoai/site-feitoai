@@ -1,0 +1,59 @@
+<svg width="800" height="500" viewBox="0 0 800 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="500" rx="10" fill="#F8F9FA"/>
+  <!-- Header -->
+  <rect width="800" height="60" fill="#7160F5"/>
+  <circle cx="30" cy="30" r="20" fill="white"/>
+  <text x="60" y="35" font-family="Arial" font-size="18" fill="white">FeitoChat Dashboard</text>
+  
+  <!-- Sidebar -->
+  <rect width="200" height="440" y="60" fill="#FFFFFF"/>
+  <rect width="180" height="40" x="10" y="80" rx="5" fill="#F0F0F0"/>
+  <text x="50" y="105" font-family="Arial" font-size="14" fill="#333333">Conversas</text>
+  <rect width="180" height="40" x="10" y="130" rx="5" fill="#F0F0F0"/>
+  <text x="50" y="155" font-family="Arial" font-size="14" fill="#333333">Contatos</text>
+  <rect width="180" height="40" x="10" y="180" rx="5" fill="#7160F5" fill-opacity="0.1"/>
+  <text x="50" y="205" font-family="Arial" font-size="14" fill="#7160F5">Automações</text>
+  <rect width="180" height="40" x="10" y="230" rx="5" fill="#F0F0F0"/>
+  <text x="50" y="255" font-family="Arial" font-size="14" fill="#333333">Relatórios</text>
+  <rect width="180" height="40" x="10" y="280" rx="5" fill="#F0F0F0"/>
+  <text x="50" y="305" font-family="Arial" font-size="14" fill="#333333">Configurações</text>
+  
+  <!-- Main Content -->
+  <rect width="580" height="440" x="220" y="60" fill="#FFFFFF"/>
+  
+  <!-- Title -->
+  <text x="240" y="100" font-family="Arial" font-size="20" font-weight="bold" fill="#333333">Automações Ativas</text>
+  
+  <!-- Cards -->
+  <rect width="260" height="160" x="240" y="120" rx="8" fill="#FFFFFF" stroke="#EEEEEE" stroke-width="1"/>
+  <rect width="260" height="40" x="240" y="120" rx="8" fill="#7160F5"/>
+  <text x="260" y="145" font-family="Arial" font-size="14" fill="#FFFFFF">Boas-vindas WhatsApp</text>
+  <text x="260" y="185" font-family="Arial" font-size="12" fill="#666666">Envia mensagem automática para</text>
+  <text x="260" y="205" font-family="Arial" font-size="12" fill="#666666">novos contatos no WhatsApp</text>
+  <rect width="80" height="30" x="260" y="230" rx="15" fill="#7160F5" fill-opacity="0.1"/>
+  <text x="275" y="250" font-family="Arial" font-size="12" fill="#7160F5">Ativo</text>
+  
+  <rect width="260" height="160" x="520" y="120" rx="8" fill="#FFFFFF" stroke="#EEEEEE" stroke-width="1"/>
+  <rect width="260" height="40" x="520" y="120" rx="8" fill="#7160F5"/>
+  <text x="540" y="145" font-family="Arial" font-size="14" fill="#FFFFFF">Recuperação de Carrinho</text>
+  <text x="540" y="185" font-family="Arial" font-size="12" fill="#666666">Envia lembretes para clientes</text>
+  <text x="540" y="205" font-family="Arial" font-size="12" fill="#666666">com carrinhos abandonados</text>
+  <rect width="80" height="30" x="540" y="230" rx="15" fill="#7160F5" fill-opacity="0.1"/>
+  <text x="555" y="250" font-family="Arial" font-size="12" fill="#7160F5">Ativo</text>
+  
+  <rect width="260" height="160" x="240" y="300" rx="8" fill="#FFFFFF" stroke="#EEEEEE" stroke-width="1"/>
+  <rect width="260" height="40" x="240" y="300" rx="8" fill="#7160F5"/>
+  <text x="260" y="325" font-family="Arial" font-size="14" fill="#FFFFFF">FAQ Automático</text>
+  <text x="260" y="365" font-family="Arial" font-size="12" fill="#666666">Responde perguntas frequentes</text>
+  <text x="260" y="385" font-family="Arial" font-size="12" fill="#666666">com base na base de conhecimento</text>
+  <rect width="80" height="30" x="260" y="410" rx="15" fill="#7160F5" fill-opacity="0.1"/>
+  <text x="275" y="430" font-family="Arial" font-size="12" fill="#7160F5">Ativo</text>
+  
+  <rect width="260" height="160" x="520" y="300" rx="8" fill="#FFFFFF" stroke="#EEEEEE" stroke-width="1"/>
+  <rect width="260" height="40" x="520" y="300" rx="8" fill="#7160F5"/>
+  <text x="540" y="325" font-family="Arial" font-size="14" fill="#FFFFFF">Agendamento</text>
+  <text x="540" y="365" font-family="Arial" font-size="12" fill="#666666">Permite clientes agendarem</text>
+  <text x="540" y="385" font-family="Arial" font-size="12" fill="#666666">horários pelo chat</text>
+  <rect width="80" height="30" x="540" y="410" rx="15" fill="#7160F5" fill-opacity="0.1"/>
+  <text x="555" y="430" font-family="Arial" font-size="12" fill="#7160F5">Ativo</text>
+</svg>
