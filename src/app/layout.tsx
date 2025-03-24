@@ -20,6 +20,13 @@ export const metadata: Metadata = {
   authors: [{ name: "FeitoAI" }],
   creator: "FeitoAI",
   publisher: "FeitoAI",
+  icons: {
+    icon: [
+      { url: '/favicon.ico' },
+      { url: '/favicon.svg', type: 'image/svg+xml' }
+    ],
+    apple: '/favicon.svg',
+  },
   openGraph: {
     type: "website",
     locale: "pt_BR",

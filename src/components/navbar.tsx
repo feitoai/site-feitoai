@@ -11,7 +11,8 @@ const navLinks = [
   { name: "Recursos", href: "/#recursos" },
   { name: "FeitoChat", href: "/#feitochat" },
   { name: "Preços", href: "/#precos" },
-  { name: "Calculadora ROI", href: "/#roi" },
+  //{ name: "Calculadora ROI_teste", href: "/#roi" },
+  { name: "Calculadora ROI", href: "/#roi-copy" },
   { name: "Integrações", href: "/#integracoes" },
   { name: "FAQ", href: "/#faq" },
   { name: "Contato", href: "/#contato" },
@@ -103,12 +104,16 @@ export function Navbar() {
         <div className="flex items-center justify-between h-16 md:h-20">
           <Link
             href="/"
-            className="flex items-center space-x-2"
+            className="flex items-center"
             onClick={(e) => handleHashLinkClick(e, "/")}
           >
-            <span className="text-xl font-bold text-gray-900 dark:text-white">
-              FeitoAI
-            </span>
+            <div className="relative w-12 h-12">
+              <img 
+                src="/feitoai-icon.svg" 
+                alt="FeitoAI Logo" 
+                className="w-full h-full object-contain" 
+              />
+            </div>
           </Link>
 
           <div className="flex items-center">

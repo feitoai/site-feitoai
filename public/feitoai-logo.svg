@@ -1,0 +1,14 @@
+<svg width="300" height="100" viewBox="0 0 300 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Purple Square with Brain Icon -->
+  <g transform="translate(30, 10)">
+    <rect x="0" y="0" width="80" height="80" rx="15" fill="#7160f5" />
+    <path d="M40 20 C30 20, 20 30, 20 40 C20 50, 30 60, 40 60 C50 60, 60 50, 60 40 C60 30, 50 20, 40 20" stroke="white" stroke-width="2" fill="none" />
+    <path d="M30 30 L25 25 M50 30 L55 25 M30 50 L25 55 M50 50 L55 55" stroke="white" stroke-width="2" />
+    <path d="M40 30 L40 20 M40 60 L40 70" stroke="white" stroke-width="2" />
+  </g>
+  
+  <!-- Text "FeitoAI" -->
+  <text x="120" y="60" font-family="Arial, sans-serif" font-weight="bold" font-size="40">
+    <tspan fill="#000000" class="dark:text-white">Feito</tspan><tspan fill="#7160f5">AI</tspan>
+  </text>
+</svg>

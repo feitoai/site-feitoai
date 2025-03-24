@@ -3,9 +3,69 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useInView } from "react-intersection-observer";
-import { FiCheck, FiDownload, FiMessageCircle } from "react-icons/fi";
+import { FiCheck, FiDownload, FiMessageCircle, FiZap, FiClock, FiBarChart2, FiArrowRight, FiTrendingUp, FiStar } from "react-icons/fi";
+import Link from "next/link";
 
-export function ROICalculator() {
+// Novo componente para realçar os benefícios da IA
+const AIBenefits = () => (
+  <div className="bg-gradient-to-br from-primary/5 to-primary/20 rounded-xl p-5 border border-primary/20 mb-8">
+    <h3 className="text-lg font-semibold mb-4 flex items-center text-primary">
+      <FiStar className="mr-2" />
+      Vantagens Exclusivas do FeitoAI
+    </h3>
+    
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="flex items-start p-3 bg-white/90 dark:bg-gray-800/50 rounded-lg">
+        <div className="w-8 h-8 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mr-3">
+          <FiClock className="text-green-600 dark:text-green-400" />
+        </div>
+        <div>
+          <h4 className="text-sm font-medium">Resposta Instantânea</h4>
+          <p className="text-sm text-gray-600 dark:text-gray-300">
+            IA avançada com respostas em tempo real para seus clientes
+          </p>
+        </div>
+      </div>
+
+      <div className="flex items-start p-3 bg-white/90 dark:bg-gray-800/50 rounded-lg">
+        <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mr-3">
+          <FiBarChart2 className="text-blue-600 dark:text-blue-400" />
+        </div>
+        <div>
+          <h4 className="text-sm font-medium">Otimização Contínua</h4>
+          <p className="text-sm text-gray-600 dark:text-gray-300">
+          Soluções inteligentes que se adaptam e evoluem a cada interação
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+// Componente para mostrar comparação antes/depois
+const ComparisonBadge = ({ label, current, aiEnhanced }: { label: string; current: number; aiEnhanced: number }) => (
+  <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700">
+    <div className="flex justify-between items-center mb-2">
+      <span className="text-sm text-gray-600 dark:text-gray-300">{label}</span>
+      <div className="flex items-center">
+        <span className="text-xs line-through mr-2 text-red-500">R$ {current}</span>
+        <span className="text-sm font-semibold text-green-600">R$ {aiEnhanced}</span>
+      </div>
+    </div>
+    <div className="relative pt-2">
+      <div className="overflow-hidden h-2 text-xs flex rounded bg-red-100">
+        <div style={{ width: `${(current / (current + aiEnhanced)) * 100}%` }} 
+             className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-red-500"></div>
+      </div>
+      <div className="overflow-hidden h-2 text-xs flex rounded bg-green-100 mt-1">
+        <div style={{ width: `${(aiEnhanced / (current + aiEnhanced)) * 100}%` }} 
+             className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-green-500"></div>
+      </div>
+    </div>
+  </div>
+);
+
+export function ROICalculatorCopy() {
   const [investment, setInvestment] = useState(397);
   const [currentConversionRate, setCurrentConversionRate] = useState(3);
   const [averageRevenue, setAverageRevenue] = useState(500);
@@ -16,7 +76,6 @@ export function ROICalculator() {
   const [revenueIncrease, setRevenueIncrease] = useState(0);
   const [paybackPeriod, setPaybackPeriod] = useState(0);
   const [conversionIncrease, setConversionIncrease] = useState(0);
-  const [annualROI, setAnnualROI] = useState(0);
   
   // UI states
   const [isDownloading, setIsDownloading] = useState(false);
@@ -66,138 +125,76 @@ export function ROICalculator() {
     }
   };
 
+  // ... [manter estados anteriores]
+
+  // Adicionar novos estados para comparação
+  const [currentCosts, setCurrentCosts] = useState(0);
+  const [aiCosts, setAiCosts] = useState(0);
+
+  // Função para formatar porcentagem no formato xx.xx%
+  const formatPercentage = (value: number) => {
+    return value.toFixed(2).replace(',', '.') + '%';
+  };
+
+  // Função para formatar ROI com exatamente dois dígitos antes e dois depois do ponto
+  const formatROI = (value: number) => {
+    // Extrair apenas os dois primeiros dígitos antes do ponto decimal
+    const integerPart = Math.floor(value);
+    const twoDigitInteger = integerPart % 100;
+    
+    // Formatar para ter dois dígitos antes do ponto
+    const formattedValue = twoDigitInteger < 10 
+      ? '0' + twoDigitInteger.toString() + '.' + value.toFixed(2).split('.')[1]
+      : twoDigitInteger.toString() + '.' + value.toFixed(2).split('.')[1];
+    
+    return formattedValue + '%';
+  };
+
   useEffect(() => {
-    // Calculate ROI metrics
-    const currentMonthlyConversions = (monthlyLeads * currentConversionRate) / 100;
-    const currentMonthlyRevenue = currentMonthlyConversions * averageRevenue;
+    // Cálculos básicos
+    const currentConversionRateDecimal = currentConversionRate / 100;
+    const currentLeadsConverted = monthlyLeads * currentConversionRateDecimal;
+    const currentMonthlyRevenue = currentLeadsConverted * averageRevenue;
     
-    // FeitoAI improvement factors - more realistic and variable based on inputs
-    // Higher improvement for lower initial conversion rates (diminishing returns)
-    const conversionImprovementFactor = 1.5 - (currentConversionRate * 0.05);
+    // Calculando o aumento de receita com IA (assumindo um aumento na taxa de conversão)
+    const aiConversionRateIncrease = 0.5; // 50% de aumento na conversão com IA
+    const aiConversionRate = currentConversionRateDecimal * (1 + aiConversionRateIncrease);
+    const aiLeadsConverted = monthlyLeads * aiConversionRate;
+    const aiMonthlyRevenue = aiLeadsConverted * averageRevenue;
     
-    // Ensure minimum improvement of 20% and maximum of 60%
-    const actualImprovementFactor = Math.max(1.2, Math.min(1.6, conversionImprovementFactor));
-    
-    const improvedConversionRate = currentConversionRate * actualImprovementFactor;
-    const improvedMonthlyConversions = (monthlyLeads * improvedConversionRate) / 100;
-    
-    // Include customer retention improvement (5-15% based on average revenue)
-    const retentionImprovementFactor = 1 + (0.05 + (averageRevenue / 10000));
-    const improvedMonthlyRevenue = improvedMonthlyConversions * averageRevenue * retentionImprovementFactor;
-    
-    const monthlyRevenueIncrease = improvedMonthlyRevenue - currentMonthlyRevenue;
+    // Calculando o aumento de receita mensal
+    const monthlyRevenueIncrease = aiMonthlyRevenue - currentMonthlyRevenue;
     const annualRevenueIncrease = monthlyRevenueIncrease * 12;
     
-    // Include cost savings from automation (15-30% of investment based on leads volume)
-    const costSavingsFactor = 0.15 + (monthlyLeads / 1000);
-    const monthlyCostSavings = investment * Math.min(0.3, costSavingsFactor);
-    const annualCostSavings = monthlyCostSavings * 12;
+    // Cálculo do ROI
+    const roiValue = (annualRevenueIncrease / investment) * 100;
+    console.log("ROI calculado:", roiValue); // Log para debug
     
-    // Total benefit includes both revenue increase and cost savings
-    const totalAnnualBenefit = annualRevenueIncrease + annualCostSavings;
+    // Cálculo do período de payback (em meses)
+    const paybackPeriodValue = investment / monthlyRevenueIncrease;
     
-    // ROI calculation: (Total Benefit - Cost of Investment) / Cost of Investment
-    const annualInvestment = investment * 12;
-    const calculatedRoi = (totalAnnualBenefit - annualInvestment) / annualInvestment * 100;
+    // Cálculo do aumento percentual na conversão
+    const conversionIncreaseValue = aiConversionRateIncrease * 100;
     
-    // Payback period in months (considering both revenue increase and cost savings)
-    const monthlyBenefit = monthlyRevenueIncrease + monthlyCostSavings;
-    const calculatedPaybackPeriod = investment / monthlyBenefit;
+    // Atualização dos estados
+    setRoi(roiValue);
+    setRevenueIncrease(monthlyRevenueIncrease);
+    setPaybackPeriod(paybackPeriodValue);
+    setConversionIncrease(conversionIncreaseValue);
     
-    const calculatedConversionIncrease = (improvedConversionRate - currentConversionRate) / currentConversionRate * 100;
-    
-    // Format all values to have two decimal places
-    setRoi(Math.max(0, parseFloat(calculatedRoi.toFixed(2))));
-    setRevenueIncrease(Math.max(0, parseFloat(monthlyRevenueIncrease.toFixed(2))));
-    setPaybackPeriod(calculatedPaybackPeriod > 0 ? parseFloat(calculatedPaybackPeriod.toFixed(2)) : 0);
-    setConversionIncrease(Math.max(0, parseFloat(calculatedConversionIncrease.toFixed(2))));
+    // Custos de atendimento
+    const currentCostPerLead = 5; // R$ por lead
+    const aiCostPerLead = 2; // R$ por lead com IA
+    setCurrentCosts(monthlyLeads * currentCostPerLead);
+    setAiCosts(monthlyLeads * aiCostPerLead);
   }, [investment, currentConversionRate, averageRevenue, monthlyLeads]);
 
-  // Animated counter effect for results
-  const handleDownload = () => {
-    setIsDownloading(true);
-    setTimeout(() => setIsDownloading(false), 2000);
-  };
-  
-  const handleContact = () => {
-    setIsContacting(true);
-    setTimeout(() => setIsContacting(false), 2000);
-  };
-
-  const handleSliderChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-    setter: React.Dispatch<React.SetStateAction<number>>,
-    value: number
-  ) => {
-    setter(value);
-    // Calculate results after slider change
-    calculateResults();
-  };
-
-  const handleDownloadClick = () => {
-    handleDownload();
-    // Analytics or other actions could be added here
-    console.log("ROI report download requested");
-  };
-
-  const handleContactClick = () => {
-    handleContact();
-    // Analytics or other actions could be added here
-    console.log("Consultant contact requested");
-  };
-
-  const calculateResults = () => {
-    // Calculate ROI metrics with the updated algorithm
-    const currentMonthlyConversions = (monthlyLeads * currentConversionRate) / 100;
-    const currentMonthlyRevenue = currentMonthlyConversions * averageRevenue;
-    
-    // FeitoAI improvement factors - more realistic and variable based on inputs
-    const conversionImprovementFactor = 1.5 - (currentConversionRate * 0.05);
-    const actualImprovementFactor = Math.max(1.2, Math.min(1.6, conversionImprovementFactor));
-    
-    const improvedConversionRate = currentConversionRate * actualImprovementFactor;
-    const improvedMonthlyConversions = (monthlyLeads * improvedConversionRate) / 100;
-    
-    // Include customer retention improvement
-    const retentionImprovementFactor = 1 + (0.05 + (averageRevenue / 10000));
-    const improvedMonthlyRevenue = improvedMonthlyConversions * averageRevenue * retentionImprovementFactor;
-    
-    const monthlyRevenueIncrease = improvedMonthlyRevenue - currentMonthlyRevenue;
-    const annualRevenueIncrease = monthlyRevenueIncrease * 12;
-    
-    // Include cost savings from automation
-    const costSavingsFactor = 0.15 + (monthlyLeads / 1000);
-    const monthlyCostSavings = investment * Math.min(0.3, costSavingsFactor);
-    const annualCostSavings = monthlyCostSavings * 12;
-    
-    // Total benefit includes both revenue increase and cost savings
-    const totalAnnualBenefit = annualRevenueIncrease + annualCostSavings;
-    
-    // ROI calculation
-    const annualInvestment = investment * 12;
-    const calculatedRoi = (totalAnnualBenefit - annualInvestment) / annualInvestment * 100;
-    
-    // Payback period in months
-    const monthlyBenefit = monthlyRevenueIncrease + monthlyCostSavings;
-    const calculatedPaybackPeriod = investment / monthlyBenefit;
-    
-    const calculatedConversionIncrease = (improvedConversionRate - currentConversionRate) / currentConversionRate * 100;
-    
-    // Update state with calculated values
-    setRoi(Math.max(0, parseFloat(calculatedRoi.toFixed(2))));
-    setRevenueIncrease(Math.max(0, parseFloat(monthlyRevenueIncrease.toFixed(2))));
-    setPaybackPeriod(calculatedPaybackPeriod > 0 ? parseFloat(calculatedPaybackPeriod.toFixed(2)) : 0);
-    setConversionIncrease(Math.max(0, parseFloat(calculatedConversionIncrease.toFixed(2))));
-  };
-
   return (
-    <section
-      id="roi"
-      ref={ref}
-      className="relative py-20 md:py-32 overflow-hidden bg-gradient-to-b from-light to-light/50 dark:from-dark dark:to-dark/90"
+    <section 
+      id="roi-copy"
+      ref={ref} 
+      className="py-20 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-950 overflow-hidden"
     >
-      <div className="absolute inset-0 bg-grid-pattern bg-center opacity-5 dark:opacity-10"></div>
-      
       {/* Animated particles */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {Array.from({ length: 6 }, (_, i) => `particle-${i}`).map((key, i) => {
@@ -231,12 +228,7 @@ export function ROICalculator() {
       </div>
 
       <div className="container mx-auto px-6">
-        <motion.div
-          className="max-w-6xl mx-auto"
-          variants={containerVariants}
-          initial="hidden"
-          animate={inView ? "visible" : "hidden"}
-        >
+        <motion.div className="max-w-6xl mx-auto">
           <motion.div 
             variants={itemVariants} 
             className="text-center mb-12"
@@ -245,35 +237,29 @@ export function ROICalculator() {
               <div className="absolute -left-6 -top-6 w-20 h-20 bg-primary/10 rounded-full blur-xl"></div>
               Calcule seu <span className="text-gradient">
                 ROI
-              </span> com o FeitoAI
+              </span> com FeitoAI
             </h2>
             <p className="text-gray-700 dark:text-gray-300 max-w-2xl mx-auto">
-              Descubra quanto sua empresa pode economizar e aumentar suas vendas com nossa solução de atendimento inteligente.
+            Descubra quanto sua empresa pode economizar e aumentar suas vendas com nossa solução de atendimento inteligente.
             </p>
           </motion.div>
 
-          <motion.div 
-            variants={itemVariants}
-            className="grid grid-cols-1 lg:grid-cols-12 gap-8"
-          >
-            {/* Parameters column - takes 5/12 of the space on large screens */}
+          <AIBenefits />
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            {/* Seção de Parâmetros */}
             <div className="lg:col-span-5">
-              <div className="bg-gradient-to-br from-white/95 to-white/80 dark:from-gray-800/95 dark:to-gray-800/80 rounded-3xl p-7 shadow-xl border border-gray-100/40 dark:border-gray-800/40 backdrop-blur-md h-full hover:shadow-2xl transition-all duration-300 relative overflow-hidden">
-                <div className="absolute -right-20 -top-20 w-40 h-40 bg-primary/5 rounded-full blur-3xl"></div>
-                <div className="absolute -left-20 -bottom-20 w-40 h-40 bg-primary/5 rounded-full blur-3xl"></div>
-                <h4 className="text-lg font-semibold mb-6 flex items-center text-primary">
-                  <span className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center mr-3 shadow-md shadow-primary/10">
-                    <svg className="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </span>
-                  Parâmetros do Cálculo
-                </h4>
-                
-                <div className="space-y-7">
+              {/* Adicionar tooltips explicativos */}
+              <div className="relative group">
+                <div className="absolute -inset-1 bg-gradient-to-r from-primary to-purple-600 opacity-20 blur transition duration-1000 group-hover:opacity-40"></div>
+                <div className="relative bg-white dark:bg-gray-800 rounded-xl p-6">
+                  <h4 className="flex items-center text-lg font-semibold mb-4">
+                    <FiZap className="mr-2 text-primary" />
+                    Simulador de Eficiência com IA
+                  </h4>
+                  
                   {/* Investment Input */}
-                  <div className="bg-gradient-to-br from-white/80 to-white/40 dark:from-gray-800/40 dark:to-gray-800/20 rounded-2xl p-5 shadow-sm border border-gray-100/30 dark:border-gray-700/30 backdrop-blur-sm hover:shadow-md transition-all duration-300 group">
+                  <div className="bg-gradient-to-br from-white/80 to-white/40 dark:from-gray-800/40 dark:to-gray-800/20 rounded-2xl p-5 shadow-sm border border-gray-100/30 dark:border-gray-700/30 backdrop-blur-sm hover:shadow-md transition-all duration-300 group mb-6">
                     <div className="flex justify-between items-center mb-4">
                       <label className="text-sm font-medium flex items-center">
                         <span className="w-7 h-7 rounded-full bg-gradient-to-br from-primary/20 to-primary/40 flex items-center justify-center mr-3 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:scale-110">
@@ -348,12 +334,12 @@ export function ROICalculator() {
                   </div>
 
                   {/* Conversion Rate Input */}
-                  <div className="bg-gradient-to-br from-white/80 to-white/40 dark:from-gray-800/40 dark:to-gray-800/20 rounded-2xl p-5 shadow-sm border border-gray-100/30 dark:border-gray-700/30 backdrop-blur-sm hover:shadow-md transition-all duration-300 group">
+                  <div className="bg-gradient-to-br from-white/80 to-white/40 dark:from-gray-800/40 dark:to-gray-800/20 rounded-2xl p-5 shadow-sm border border-gray-100/30 dark:border-gray-700/30 backdrop-blur-sm hover:shadow-md transition-all duration-300 group mb-6">
                     <div className="flex justify-between items-center mb-4">
                       <label className="text-sm font-medium flex items-center">
                         <span className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-400/20 to-blue-600/40 flex items-center justify-center mr-3 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:scale-110">
                           <svg className="w-3.5 h-3.5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                           </svg>
                         </span>
                         <span className="text-gray-700 dark:text-gray-300 group-hover:text-blue-400 transition-all duration-300">
@@ -372,7 +358,7 @@ export function ROICalculator() {
                         <motion.div 
                           className="absolute inset-0 bg-gradient-to-r from-blue-400/30 via-blue-500/50 to-blue-600/70 h-full"
                           initial={{ width: 0 }}
-                          animate={{ width: `${currentConversionRate * 10}%` }}
+                          animate={{ width: `${(currentConversionRate - 1) / 0.09}%` }}
                           transition={{ duration: 0.5, ease: "easeOut" }}
                         />
                       </div>
@@ -380,7 +366,7 @@ export function ROICalculator() {
                         type="range"
                         min="1"
                         max="10"
-                        step="1"
+                        step="0.5"
                         className="w-full h-2 bg-gray-200/50 dark:bg-gray-700/30 rounded-full appearance-none cursor-pointer relative z-10 
                         slider-thumb 
                         [&::-webkit-slider-thumb]:appearance-none 
@@ -423,7 +409,7 @@ export function ROICalculator() {
                   </div>
                   
                   {/* Average Revenue Input */}
-                  <div className="bg-gradient-to-br from-white/80 to-white/40 dark:from-gray-800/40 dark:to-gray-800/20 rounded-2xl p-5 shadow-sm border border-gray-100/30 dark:border-gray-700/30 backdrop-blur-sm hover:shadow-md transition-all duration-300 group">
+                  <div className="bg-gradient-to-br from-white/80 to-white/40 dark:from-gray-800/40 dark:to-gray-800/20 rounded-2xl p-5 shadow-sm border border-gray-100/30 dark:border-gray-700/30 backdrop-blur-sm hover:shadow-md transition-all duration-300 group mb-6">
                     <div className="flex justify-between items-center mb-4">
                       <label className="text-sm font-medium flex items-center">
                         <span className="w-7 h-7 rounded-full bg-gradient-to-br from-green-400/20 to-green-600/40 flex items-center justify-center mr-3 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:scale-110">
@@ -498,7 +484,7 @@ export function ROICalculator() {
                   </div>
                   
                   {/* Monthly Leads Input */}
-                  <div className="bg-gradient-to-br from-white/80 to-white/40 dark:from-gray-800/40 dark:to-gray-800/20 rounded-2xl p-5 shadow-sm border border-gray-100/30 dark:border-gray-700/30 backdrop-blur-sm hover:shadow-md transition-all duration-300 group">
+                  <div className="bg-gradient-to-br from-white/80 to-white/40 dark:from-gray-800/40 dark:to-gray-800/20 rounded-2xl p-5 shadow-sm border border-gray-100/30 dark:border-gray-700/30 backdrop-blur-sm hover:shadow-md transition-all duration-300 group mb-6">
                     <div className="flex justify-between items-center mb-4">
                       <label className="text-sm font-medium flex items-center">
                         <span className="w-7 h-7 rounded-full bg-gradient-to-br from-purple-400/20 to-purple-600/40 flex items-center justify-center mr-3 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:scale-110">
@@ -571,202 +557,186 @@ export function ROICalculator() {
                       <span>500</span>
                     </div>
                   </div>
+                  
+                  <ComparisonBadge 
+                    label="Custo Mensal de Atendimento" 
+                    current={currentCosts}
+                    aiEnhanced={aiCosts}
+                  />
                 </div>
               </div>
             </div>
-            
-            {/* Results column - takes 7/12 of the space on large screens */}
+
+            {/* Seção de Resultados */}
             <div className="lg:col-span-7">
-              <div className="bg-gradient-to-br from-white/95 to-white/80 dark:from-gray-900/95 dark:to-gray-900/80 rounded-3xl p-7 shadow-xl border border-gray-100/40 dark:border-gray-800/40 backdrop-blur-md h-full hover:shadow-2xl transition-all duration-300 relative overflow-hidden">
-                <div className="absolute -right-20 -top-20 w-40 h-40 bg-primary/5 rounded-full blur-3xl"></div>
-                <div className="absolute -left-20 -bottom-20 w-40 h-40 bg-primary/5 rounded-full blur-3xl"></div>
-                <div className="mb-6">
-                  <h3 className="text-xl font-bold mb-4 text-gradient">Resultados</h3>
+              <div className="relative group h-full">
+                <div className="absolute -inset-1 bg-gradient-to-r from-primary to-purple-600 opacity-0 blur transition duration-1000 group-hover:opacity-40"></div>
+                <div className="relative bg-white dark:bg-gray-800 rounded-xl p-6 h-full flex flex-col bg-gradient-to-br from-white/80 to-white/40 dark:from-gray-800/40 dark:to-gray-800/20 shadow-sm border border-gray-100/30 dark:border-gray-700/30 backdrop-blur-sm hover:shadow-md transition-all duration-300">
+                  <h4 className="flex items-center text-lg font-semibold mb-6">
+                    <FiBarChart2 className="mr-2 text-primary" />
+                    Resultados da Implementação de IA
+                  </h4>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                    <motion.div
-                      variants={itemVariants}
-                      className="bg-gradient-to-br from-white/90 to-white/60 dark:from-gray-800/90 dark:to-gray-800/60 rounded-xl p-6 border-2 border-green-400/30 dark:border-green-400/20 backdrop-blur-sm relative overflow-hidden group shadow-lg"
-                      whileHover={{ 
-                        y: -5, 
-                        boxShadow: "0 15px 30px rgba(0, 0, 0, 0.15)",
-                        borderColor: "rgba(74, 222, 128, 0.5)",
-                        transition: { duration: 0.3 }
-                      }}
-                    >
-                      <div className="absolute top-0 left-0 h-full w-1 bg-gradient-to-b from-green-400 to-green-600"></div>
-                      <div className="absolute -right-20 -top-20 w-40 h-40 bg-green-400/10 rounded-full blur-3xl group-hover:bg-green-400/20 transition-all duration-700"></div>
-                      
-                      <h4 className="text-lg font-semibold mb-3 relative z-10">
-                        <span className="text-gradient-green">ROI Anual</span>
-                      </h4>
-                      
-                      <div className="relative z-10">
-                        <div className="font-bold text-gray-800 dark:text-gray-200 text-xs md:text-sm whitespace-nowrap overflow-hidden text-ellipsis h-6 flex items-center">
-                          {roi.toFixed(2)}%
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-grow">
+                    {/* ROI Card */}
+                    <div className="bg-gradient-to-br from-white/80 to-white/40 dark:from-gray-800/40 dark:to-gray-800/20 rounded-2xl p-5 shadow-sm border border-gray-100/30 dark:border-gray-700/30 backdrop-blur-sm hover:shadow-md transition-all duration-300 group">
+                      <div className="flex items-center mb-4">
+                        <span className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/40 flex items-center justify-center mr-3 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:scale-110">
+                          <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                          </svg>
+                        </span>
+                        <h5 className="text-base font-medium text-gray-700 dark:text-gray-300">ROI Anual</h5>
+                      </div>
+                      <div className="relative">
+                        <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 to-primary-light/30 blur-md opacity-30 rounded-xl"></div>
+                        <div className="relative bg-white/90 dark:bg-gray-800/90 p-4 rounded-xl border border-primary/10">
+                          <div className="flex items-baseline">
+                            <span className="text-3xl font-bold text-primary">{formatROI(roi)}</span>
+                            <span className="ml-2 text-sm text-gray-500 dark:text-gray-400">em 12 meses</span>
+                          </div>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                            Retorno sobre investimento com base nos parâmetros atuais
+                          </p>
                         </div>
                       </div>
-                      
-                      <div className="text-sm text-gray-600 dark:text-gray-400 relative z-10 mb-4">
-                        Retorno sobre investimento
+                    </div>
+                    
+                    {/* Revenue Increase Card */}
+                    <div className="bg-gradient-to-br from-white/80 to-white/40 dark:from-gray-800/40 dark:to-gray-800/20 rounded-2xl p-5 shadow-sm border border-gray-100/30 dark:border-gray-700/30 backdrop-blur-sm hover:shadow-md transition-all duration-300 group">
+                      <div className="flex items-center mb-4">
+                        <span className="w-10 h-10 rounded-full bg-gradient-to-br from-green-400/20 to-green-600/40 flex items-center justify-center mr-3 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:scale-110">
+                          <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        </span>
+                        <h5 className="text-base font-medium text-gray-700 dark:text-gray-300">Aumento de Receita</h5>
                       </div>
-                      
-                      <div className="mt-3 h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                        <div 
-                          className="h-full bg-gradient-to-r from-green-400 to-green-600 rounded-full transition-all duration-1000 ease-in-out" 
-                          style={{ width: `${Math.min(roi / 500 * 100, 100)}%` }}
-                        ></div>
-                      </div>
-                    </motion.div>
-
-                    <motion.div
-                      variants={itemVariants}
-                      className="bg-gradient-to-br from-white/90 to-white/60 dark:from-gray-800/90 dark:to-gray-800/60 rounded-xl p-6 border-2 border-primary/30 dark:border-primary/20 backdrop-blur-sm relative overflow-hidden group shadow-lg"
-                      whileHover={{ 
-                        y: -5, 
-                        boxShadow: "0 15px 30px rgba(0, 0, 0, 0.15)",
-                        borderColor: "rgba(113, 96, 245, 0.5)",
-                        transition: { duration: 0.3 }
-                      }}
-                    >
-                      <div className="absolute top-0 left-0 h-full w-1 bg-gradient-to-b from-primary to-primary-light"></div>
-                      <div className="absolute -right-20 -top-20 w-40 h-40 bg-primary/10 rounded-full blur-3xl group-hover:bg-primary/20 transition-all duration-700"></div>
-                      
-                      <h4 className="text-lg font-semibold mb-3 relative z-10">
-                        <span className="text-gradient">Aumento de Receita</span>
-                      </h4>
-                      
-                      <div className="relative z-10">
-                        <div className="font-bold text-gray-800 dark:text-gray-200 text-xs md:text-sm whitespace-nowrap overflow-hidden text-ellipsis h-6 flex items-center">
-                          R$ {revenueIncrease.toFixed(2)}/mês
+                      <div className="relative">
+                        <div className="absolute -inset-1 bg-gradient-to-r from-green-400/20 to-green-600/30 blur-md opacity-30 rounded-xl"></div>
+                        <div className="relative bg-white/90 dark:bg-gray-800/90 p-4 rounded-xl border border-green-500/10">
+                          <div className="flex items-baseline">
+                            <span className="text-3xl font-bold text-green-500">R$ {revenueIncrease.toLocaleString('pt-BR', {maximumFractionDigits: 2})}</span>
+                            <span className="ml-2 text-sm text-gray-500 dark:text-gray-400">por mês</span>
+                          </div>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                            Receita adicional gerada pela melhoria na conversão
+                          </p>
                         </div>
                       </div>
-                      
-                      <div className="text-sm text-gray-600 dark:text-gray-400 relative z-10 mb-4">
-                        Receita adicional mensal
+                    </div>
+                    
+                    {/* Payback Period Card */}
+                    <div className="bg-gradient-to-br from-white/80 to-white/40 dark:from-gray-800/40 dark:to-gray-800/20 rounded-2xl p-5 shadow-sm border border-gray-100/30 dark:border-gray-700/30 backdrop-blur-sm hover:shadow-md transition-all duration-300 group">
+                      <div className="flex items-center mb-4">
+                        <span className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400/20 to-blue-600/40 flex items-center justify-center mr-3 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:scale-110">
+                          <svg className="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        </span>
+                        <h5 className="text-base font-medium text-gray-700 dark:text-gray-300">Período de Payback</h5>
                       </div>
-                      
-                      <div className="mt-3 h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                        <div 
-                          className="h-full bg-gradient-to-r from-primary to-primary-light rounded-full transition-all duration-1000 ease-in-out" 
-                          style={{ width: `${Math.min(revenueIncrease / 50000 * 100, 100)}%` }}
-                        ></div>
-                      </div>
-                    </motion.div>
-
-                    <motion.div
-                      variants={itemVariants}
-                      className="bg-gradient-to-br from-white/90 to-white/60 dark:from-gray-800/90 dark:to-gray-800/60 rounded-xl p-6 border-2 border-blue-400/30 dark:border-blue-400/20 backdrop-blur-sm relative overflow-hidden group shadow-lg"
-                      whileHover={{ 
-                        y: -5, 
-                        boxShadow: "0 15px 30px rgba(0, 0, 0, 0.15)",
-                        borderColor: "rgba(96, 165, 250, 0.5)",
-                        transition: { duration: 0.3 }
-                      }}
-                    >
-                      <div className="absolute top-0 left-0 h-full w-1 bg-gradient-to-b from-blue-400 to-blue-600"></div>
-                      <div className="absolute -right-20 -top-20 w-40 h-40 bg-blue-400/10 rounded-full blur-3xl group-hover:bg-blue-400/20 transition-all duration-700"></div>
-                      
-                      <h4 className="text-lg font-semibold mb-3 relative z-10">
-                        <span className="text-gradient-blue">Retorno do Investimento</span>
-                      </h4>
-                      
-                      <div className="relative z-10">
-                        <div className="font-bold text-gray-800 dark:text-gray-200 text-xs md:text-sm whitespace-nowrap overflow-hidden text-ellipsis h-6 flex items-center">
-                          {paybackPeriod.toFixed(2)} meses
+                      <div className="relative">
+                        <div className="absolute -inset-1 bg-gradient-to-r from-blue-400/20 to-blue-600/30 blur-md opacity-30 rounded-xl"></div>
+                        <div className="relative bg-white/90 dark:bg-gray-800/90 p-4 rounded-xl border border-blue-500/10">
+                          <div className="flex items-baseline">
+                            <span className="text-3xl font-bold text-blue-500">{paybackPeriod.toFixed(2)}</span>
+                            <span className="ml-2 text-sm text-gray-500 dark:text-gray-400">meses</span>
+                          </div>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                            Tempo para recuperar o investimento inicial
+                          </p>
                         </div>
                       </div>
-                      
-                      <div className="text-sm text-gray-600 dark:text-gray-400 relative z-10 mb-4">
-                        Tempo para retorno do investimento
+                    </div>
+                    
+                    {/* Conversion Increase Card */}
+                    <div className="bg-gradient-to-br from-white/80 to-white/40 dark:from-gray-800/40 dark:to-gray-800/20 rounded-2xl p-5 shadow-sm border border-gray-100/30 dark:border-gray-700/30 backdrop-blur-sm hover:shadow-md transition-all duration-300 group">
+                      <div className="flex items-center mb-4">
+                        <span className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-400/20 to-purple-600/40 flex items-center justify-center mr-3 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:scale-110">
+                          <svg className="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                          </svg>
+                        </span>
+                        <h5 className="text-base font-medium text-gray-700 dark:text-gray-300">Aumento na Conversão</h5>
                       </div>
-                      
-                      <div className="mt-3 h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                        <div 
-                          className="h-full bg-gradient-to-r from-blue-400 to-blue-600 rounded-full transition-all duration-1000 ease-in-out" 
-                          style={{ width: `${Math.min(1 / (paybackPeriod || 1) * 10, 100)}%` }}
-                        ></div>
+                      <div className="relative">
+                        <div className="absolute -inset-1 bg-gradient-to-r from-purple-400/20 to-purple-600/30 blur-md opacity-30 rounded-xl"></div>
+                        <div className="relative bg-white/90 dark:bg-gray-800/90 p-4 rounded-xl border border-purple-500/10">
+                          <div className="flex items-baseline">
+                            <span className="text-3xl font-bold text-purple-500">{formatPercentage(conversionIncrease)}</span>
+                            <span className="ml-2 text-sm text-gray-500 dark:text-gray-400">de ganho</span>
+                          </div>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                            Aumento absoluto na taxa de conversão com IA
+                          </p>
+                        </div>
                       </div>
-                    </motion.div>
+                    </div>
                   </div>
                   
-                  <div className="bg-gradient-to-br from-gray-50/90 to-gray-100/50 dark:from-gray-800/20 dark:to-gray-700/10 backdrop-blur-sm rounded-xl p-5 border border-gray-100/50 dark:border-gray-700/30">
-                    <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Benefícios do FeitoAI</h4>
-                    
-                    <ul className="space-y-3">
-                      <li className="flex items-start">
-                        <div className="w-6 h-6 rounded-full bg-green-500/10 flex items-center justify-center mr-3">
-                          <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
+                  {/* Additional Benefits Section */}
+                  <div className="mt-8">
+                    <h5 className="text-base font-medium text-gray-700 dark:text-gray-300 mb-4">Benefícios Adicionais</h5>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="flex items-start">
+                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-green-400/20 to-green-600/40 flex items-center justify-center mr-3">
+                          <FiCheck className="w-4 h-4 text-green-500" />
                         </div>
                         <div>
-                          <h5 className="font-medium text-green-700 dark:text-green-400">Economia de tempo e recursos</h5>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">Reduza em até 40% o tempo e custos com atendimento ao cliente</p>
+                          <h6 className="text-sm font-medium text-gray-700 dark:text-gray-300">Automação de Processos</h6>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                            Redução de até 70% no tempo de resposta ao cliente
+                          </p>
                         </div>
-                      </li>
-                      <li className="flex items-start">
-                        <div className="w-6 h-6 rounded-full bg-blue-500/10 flex items-center justify-center mr-3">
-                          <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                        </div>
-                        <div>
-                          <h5 className="font-medium text-blue-700 dark:text-blue-400">Aumento de conversões e retenção</h5>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">Aumente em até 60% suas conversões e melhore a retenção de clientes</p>
-                        </div>
-                      </li>
-                      <li className="flex items-start">
-                        <div className="w-6 h-6 rounded-full bg-purple-500/10 flex items-center justify-center mr-3">
-                          <svg className="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
+                      </div>
+                      <div className="flex items-start">
+                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-green-400/20 to-green-600/40 flex items-center justify-center mr-3">
+                          <FiCheck className="w-4 h-4 text-green-500" />
                         </div>
                         <div>
-                          <h5 className="font-medium text-purple-700 dark:text-purple-400">Retorno rápido do investimento</h5>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">Obtenha retorno do seu investimento em poucos meses com nossa solução completa</p>
+                          <h6 className="text-sm font-medium text-gray-700 dark:text-gray-300">Retenção de Clientes</h6>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                            Aumento de 25% na satisfação e fidelização
+                          </p>
                         </div>
-                      </li>
-                    </ul>
+                      </div>
+                      <div className="flex items-start">
+                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-green-400/20 to-green-600/40 flex items-center justify-center mr-3">
+                          <FiCheck className="w-4 h-4 text-green-500" />
+                        </div>
+                        <div>
+                          <h6 className="text-sm font-medium text-gray-700 dark:text-gray-300">Escalabilidade</h6>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                            Capacidade de atender 5x mais clientes sem aumentar equipe
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-start">
+                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-green-400/20 to-green-600/40 flex items-center justify-center mr-3">
+                          <FiCheck className="w-4 h-4 text-green-500" />
+                        </div>
+                        <div>
+                          <h6 className="text-sm font-medium text-gray-700 dark:text-gray-300">Insights de Dados</h6>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                            Análise avançada de conversas para melhorar estratégias
+                          </p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
-                
-                <div className="flex justify-center">
-                  <motion.button 
-                    whileHover={{ 
-                      scale: 1.05, 
-                      boxShadow: "0 0 25px rgba(124, 58, 237, 0.5)",
-                      transition: { duration: 0.3 }
-                    }}
-                    whileTap={{ scale: 0.98 }}
-                    className="relative inline-flex items-center justify-center h-14 px-8 py-4 bg-gradient-to-r from-primary to-primary-light text-white rounded-full font-medium shadow-lg shadow-primary/20 overflow-hidden text-lg group"
-                    onClick={handleContactClick}
-                  >
-                    {/* Animated background effect */}
-                    <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-primary-light via-primary to-primary-light bg-[length:200%_100%] animate-gradient-x"></span>
-                    
-                    {/* Enhanced pulse effect */}
-                    <span className="absolute inset-0 w-full h-full rounded-full bg-gradient-to-r from-purple-400/30 via-pink-500/30 to-purple-400/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-gradient-xy"></span>
-                    
-                    {/* Glow effect */}
-                    <span className="absolute -inset-1 rounded-full blur-md bg-gradient-to-r from-primary via-primary-light to-primary opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:scale-105 bg-size-200 bg-pos-0 group-hover:bg-pos-100"></span>
-                    
-                    {/* Button content */}
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      className="flex items-center relative z-10"
-                    >
-                      <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                      </svg>
-                      Começar agora
-                    </motion.div>
-                  </motion.button>
+                  
+                  {/* CTA Button */}
+                  <div className="mt-8 text-center">
+                    <Link href="#contact" className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-full text-white bg-primary hover:bg-primary-dark shadow-sm hover:shadow-md transition-all duration-300 transform hover:scale-105">
+                      Fale com um Especialista
+                      <FiMessageCircle className="w-5 h-5 ml-2" />
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
-          </motion.div>
+          </div>
         </motion.div>
       </div>
     </section>

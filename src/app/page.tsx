@@ -4,6 +4,7 @@ import { HeroSection } from "@/components/sections/hero-section";
 import { FeaturesSection } from "@/components/sections/features-section";
 import { PricingSection } from "@/components/sections/pricing-section";
 import { ROICalculator } from "@/components/sections/roi-calculator";
+import { ROICalculatorCopy } from "@/components/sections/roi-calculator copy";
 import { IntegrationsSection } from "@/components/sections/integrations-section";
 import { FeitoChatSection } from "@/components/sections/feitochat-section";
 import { FAQSection } from "@/components/sections/faq-section";
@@ -18,7 +19,8 @@ export default function Home() {
       <FeaturesSection />
       <FeitoChatSection />
       <PricingSection />
-      <ROICalculator />
+      {/* <ROICalculator /> */}
+      <ROICalculatorCopy />
       <IntegrationsSection />
       <FAQSection />
       <ContactSection />
