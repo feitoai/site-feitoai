@@ -728,7 +728,7 @@ export function ROICalculatorCopy() {
                   
                   {/* CTA Button */}
                   <div className="mt-8 text-center">
-                    <Link href="#contact" className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-full text-white bg-primary hover:bg-primary-dark shadow-sm hover:shadow-md transition-all duration-300 transform hover:scale-105">
+                    <Link href="/#contato" className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-full text-white bg-primary hover:bg-primary-dark shadow-sm hover:shadow-md transition-all duration-300 transform hover:scale-105">
                       Fale com um Especialista
                       <FiMessageCircle className="w-5 h-5 ml-2" />
                     </Link>
