@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { FiInstagram, FiLinkedin, FiFacebook, FiTwitter } from "react-icons/fi";
+import { FiInstagram, FiLinkedin, FiFacebook, FiYoutube } from "react-icons/fi";
 import { ThemeToggle } from "./theme-toggle";
 
 export function Footer() {
@@ -55,12 +55,12 @@ export function Footer() {
                 <FiFacebook className="w-5 h-5" />
               </a>
               <a 
-                href="https://twitter.com/feitoai" 
+                href="https://youtube.com/@feitoai" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-light dark:bg-dark flex items-center justify-center text-dark/70 dark:text-light/70 hover:text-primary dark:hover:text-primary transition-colors"
               >
-                <FiTwitter className="w-5 h-5" />
+                <FiYoutube className="w-5 h-5" />
               </a>
             </div>
           </div>
