@@ -15,9 +15,9 @@ export function Footer() {
           <div>
             <Link href="/" className="inline-block mb-6">
               <div className="flex items-center">
-                <div className="relative w-10 h-10 mr-2">
+                <div className="relative w-16 h-16 mr-2">
                   <Image 
-                    src="/logo.svg" 
+                    src="/logos/icone_para_fundo_branco.svg" 
                     alt="FeitoAI Logo" 
                     fill 
                     className="object-contain"

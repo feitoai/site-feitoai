@@ -111,7 +111,7 @@ export function HeroSection() {
           >
             {/* Background blob with animated gradient */}
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] md:w-[400px] md:h-[400px] bg-gradient-to-br from-primary/20 via-purple-500/20 to-primary/10 dark:from-primary/15 dark:via-purple-500/15 dark:to-primary/5 rounded-full blur-3xl"></div>
-            
+      
             {/* Animated ring */}
             <motion.div 
               className="absolute top-1/2 left-1/2 w-[280px] h-[280px] md:w-[380px] md:h-[380px] border border-primary/20 rounded-full"
@@ -142,7 +142,7 @@ export function HeroSection() {
               }}
             >
               <Image
-                src="/hero-illustration.svg"
+                src="/hero.svg"
                 alt="Ilustração de atendimento com IA"
                 fill
                 className="object-contain"
