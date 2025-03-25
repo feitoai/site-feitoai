@@ -36,8 +36,8 @@ export function HeroSection() {
 
   return (
     <section
-      ref={ref}
       id="hero"
+      ref={ref}
       className="relative min-h-screen flex items-center pt-12 overflow-hidden"
     >
       {/* Animated background gradient */}
@@ -85,7 +85,7 @@ export function HeroSection() {
                 whileTap={{ scale: 0.98 }}
               >
                 <Link
-                  href="/#roi-copy"
+                  href="#roi-calculator-copy"
                   className="inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-primary via-primary-light to-primary text-white font-medium rounded-full shadow-lg shadow-primary/20 transition-all duration-300 text-center bg-size-200 bg-pos-0 hover:bg-pos-100"
                 >
                   Descubra seu ROI agora!

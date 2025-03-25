@@ -187,14 +187,14 @@ export function IntegrationsSection() {
 
         <motion.div
           variants={itemVariants}
-          className="flex justify-center mb-12"
+          className="flex justify-center mb-12 overflow-x-auto pb-2 -mx-4 px-4 md:px-0 md:mx-0"
         >
-          <div className="inline-flex p-1 bg-gray-100 dark:bg-gray-800 rounded-full">
+          <div className="inline-flex flex-nowrap p-1 bg-gray-100 dark:bg-gray-800 rounded-full whitespace-nowrap">
             {categories.map((category) => (
               <button
                 key={category.id}
                 onClick={() => setActiveCategory(category.id)}
-                className={`px-6 py-2 rounded-full text-sm font-medium transition-colors ${
+                className={`px-3 sm:px-4 md:px-6 py-2 rounded-full text-xs sm:text-sm font-medium transition-colors ${
                   activeCategory === category.id
                     ? "bg-primary text-white"
                     : "text-dark/70 dark:text-light/70 hover:bg-gray-200 dark:hover:bg-gray-700"
@@ -210,7 +210,7 @@ export function IntegrationsSection() {
           variants={containerVariants}
           initial="hidden"
           animate={inView ? "visible" : "hidden"}
-          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6"
+          className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6"
         >
           {filteredIntegrations.map((integration) => (
             <motion.div
@@ -218,7 +218,7 @@ export function IntegrationsSection() {
               variants={itemVariants}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
-              className={`relative bg-light dark:bg-gray-800/80 rounded-xl p-6 border transition-all duration-300 ${
+              className={`relative bg-light dark:bg-gray-800/80 rounded-xl p-4 sm:p-6 border transition-all duration-300 ${
                 hoveredIntegration === integration.id
                   ? "border-primary shadow-lg shadow-primary/20 transform"
                   : "border-gray-200 dark:border-gray-800 hover:border-primary/50 dark:hover:border-primary/50"
@@ -228,7 +228,7 @@ export function IntegrationsSection() {
             >
               <div className="flex flex-col items-center text-center">
                 <motion.div 
-                  className="w-16 h-16 mb-4 relative"
+                  className="w-12 h-12 sm:w-16 sm:h-16 mb-3 sm:mb-4 relative"
                   variants={iconVariants}
                   whileHover="hover"
                 >
@@ -239,7 +239,7 @@ export function IntegrationsSection() {
                     className="object-contain drop-shadow-md"
                   />
                 </motion.div>
-                <h3 className="font-medium mb-2">{integration.name}</h3>
+                <h3 className="text-sm sm:text-base font-medium mb-2">{integration.name}</h3>
                 
                 {hoveredIntegration === integration.id && (
                   <motion.div
@@ -247,9 +247,9 @@ export function IntegrationsSection() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 10 }}
                     transition={{ duration: 0.3, ease: "easeOut" }}
-                    className="absolute inset-0 bg-gradient-to-br from-light/95 to-light/90 dark:from-gray-800/95 dark:to-gray-800/90 rounded-xl p-4 flex flex-col items-center justify-center text-center backdrop-blur-sm"
+                    className="absolute inset-0 bg-gradient-to-br from-light/95 to-light/90 dark:from-gray-800/95 dark:to-gray-800/90 rounded-xl p-3 sm:p-4 flex flex-col items-center justify-center text-center backdrop-blur-sm"
                   >
-                    <p className="text-sm">{integration.description}</p>
+                    <p className="text-xs sm:text-sm">{integration.description}</p>
                   </motion.div>
                 )}
               </div>
@@ -259,14 +259,14 @@ export function IntegrationsSection() {
 
         <motion.div
           variants={itemVariants}
-          className="mt-12 text-center"
+          className="mt-12 text-center px-4 sm:px-0"
         >
           <p className="text-dark/70 dark:text-light/70 mb-4">
             Não encontrou a integração que precisa?
           </p>
           <a
             href="#contato"
-            className="inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-primary via-primary-light to-primary text-white font-medium rounded-full shadow-lg shadow-primary/20 transition-all duration-300 transform hover:scale-105 button-hover-effect bg-size-200 bg-pos-0 hover:bg-pos-100"
+            className="inline-flex items-center justify-center px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-primary via-primary-light to-primary text-white text-sm sm:text-base font-medium rounded-full shadow-lg shadow-primary/20 transition-all duration-300 transform hover:scale-105 button-hover-effect bg-size-200 bg-pos-0 hover:bg-pos-100"
           >
             Solicite uma integração personalizada <FiArrowRight className="ml-2" />
           </a>

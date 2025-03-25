@@ -7,15 +7,15 @@ import { ThemeToggle } from "./theme-toggle";
 import { FiMenu, FiX, FiChevronRight } from "react-icons/fi";
 
 const navLinks = [
-  { name: "Início", href: "/" },
-  { name: "Recursos", href: "/#recursos" },
-  { name: "FeitoChat", href: "/#feitochat" },
-  { name: "Preços", href: "/#precos" },
+  { name: "Início", href: "#hero" },
+  { name: "Recursos", href: "#recursos" },
+  { name: "FeitoChat", href: "#feitochat" },
+  { name: "Preços", href: "#precos" },
   //{ name: "Calculadora ROI_teste", href: "/#roi" },
-  { name: "Calculadora ROI", href: "/#roi-copy" },
-  { name: "Integrações", href: "/#integracoes" },
-  { name: "FAQ", href: "/#faq" },
-  { name: "Contato", href: "/#contato" },
+  { name: "Calculadora ROI", href: "#roi-calculator-copy" },
+  { name: "Integrações", href: "#integracoes" },
+  { name: "FAQ", href: "#faq" },
+  { name: "Contato", href: "#contato" },
 ];
 
 export function Navbar() {
@@ -35,7 +35,7 @@ export function Navbar() {
         const sectionId = section.getAttribute('id');
         
         if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
-          setActiveLink(`/#${sectionId}`);
+          setActiveLink(`#${sectionId}`);
         }
       });
       
@@ -52,9 +52,9 @@ export function Navbar() {
   // Handle smooth scrolling for hash links
   const handleHashLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     // Only apply to hash links
-    if (href.startsWith('/#')) {
+    if (href.startsWith('#')) {
       e.preventDefault();
-      const targetId = href.replace('/#', '');
+      const targetId = href.replace('#', '');
       const targetElement = document.getElementById(targetId);
       
       if (targetElement) {
@@ -68,7 +68,7 @@ export function Navbar() {
         
         // Scroll to the element with smooth behavior
         window.scrollTo({
-          top: targetElement.offsetTop - 100, // Offset for the fixed header
+          top: targetElement.offsetTop - 80, // Offset for the fixed header
           behavior: 'smooth'
         });
       }
@@ -167,8 +167,8 @@ export function Navbar() {
               </Link>
               
               <Link
-                href="/#contato"
-                onClick={(e) => handleHashLinkClick(e, "/#contato")}
+                href="#contato"
+                onClick={(e) => handleHashLinkClick(e, "#contato")}
                 className="hidden md:inline-flex button-hover-effect items-center justify-center px-6 py-2 bg-gradient-to-r from-primary via-primary-light to-primary text-white font-medium rounded-full shadow-lg shadow-primary/20 transition-all duration-300 transform hover:scale-105 bg-size-200 bg-pos-0 hover:bg-pos-100"
               >
                 Iniciar Teste <FiChevronRight className="ml-1" />
@@ -198,45 +198,57 @@ export function Navbar() {
       {/* Mobile menu */}
       <AnimatePresence>
         {mobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3 }}
-            className="md:hidden bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 shadow-lg"
-          >
-            <div className="container mx-auto px-4 py-4">
-              <nav className="flex flex-col space-y-4">
-                {navLinks.map((link) => (
+          <>
+            {/* Overlay to close menu when clicked */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.5 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 bg-black z-30 md:hidden"
+              onClick={() => setMobileMenuOpen(false)}
+            />
+            
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+              className="md:hidden fixed top-16 left-0 right-0 bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 shadow-lg z-40 overflow-hidden max-h-[calc(100vh-4rem)] overflow-y-auto"
+            >
+              <div className="container mx-auto px-4 py-4">
+                <nav className="flex flex-col space-y-4">
+                  {navLinks.map((link) => (
+                    <Link
+                      key={link.name}
+                      href={link.href}
+                      onClick={(e) => {
+                        handleHashLinkClick(e, link.href);
+                        setMobileMenuOpen(false);
+                      }}
+                      className={`px-4 py-2 rounded-lg transition-colors ${
+                        activeLink === link.href
+                          ? "bg-primary/10 text-primary font-medium"
+                          : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                      }`}
+                    >
+                      {link.name}
+                    </Link>
+                  ))}
                   <Link
-                    key={link.name}
-                    href={link.href}
+                    href="#contato"
                     onClick={(e) => {
-                      handleHashLinkClick(e, link.href);
+                      handleHashLinkClick(e, "#contato");
                       setMobileMenuOpen(false);
                     }}
-                    className={`px-4 py-2 rounded-lg transition-colors ${
-                      activeLink === link.href
-                        ? "bg-primary/10 text-primary font-medium"
-                        : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-                    }`}
+                    className="px-4 py-2 bg-primary hover:bg-primary-dark text-white font-medium rounded-lg shadow-md shadow-primary/20 transition-colors text-center"
                   >
-                    {link.name}
+                    Fale Conosco
                   </Link>
-                ))}
-                <Link
-                  href="#contato"
-                  onClick={(e) => {
-                    handleHashLinkClick(e, "#contato");
-                    setMobileMenuOpen(false);
-                  }}
-                  className="px-4 py-2 bg-primary hover:bg-primary-dark text-white font-medium rounded-lg shadow-md shadow-primary/20 transition-colors text-center"
-                >
-                  Fale Conosco
-                </Link>
-              </nav>
-            </div>
-          </motion.div>
+                </nav>
+              </div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </motion.header>

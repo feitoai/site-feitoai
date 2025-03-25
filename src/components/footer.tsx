@@ -164,7 +164,7 @@ export function Footer() {
             {currentYear} FeitoAI. Todos os direitos reservados.
           </div>
           
-          <div className="flex flex-wrap justify-center gap-4 md:gap-6">
+          <div className="flex flex-row items-center justify-center space-x-6">
             <Link href="/termos" className="text-dark/70 dark:text-light/70 hover:text-primary dark:hover:text-primary transition-colors text-sm">
               Termos de Serviço
             </Link>
@@ -174,9 +174,7 @@ export function Footer() {
             <Link href="/cookies" className="text-dark/70 dark:text-light/70 hover:text-primary dark:hover:text-primary transition-colors text-sm">
               Cookies
             </Link>
-            <div className="ml-2">
-              <ThemeToggle />
-            </div>
+            <ThemeToggle />
           </div>
         </div>
       </div>
