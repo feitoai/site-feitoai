@@ -39,7 +39,7 @@ const features = [
     name: "Automações",
     description: "Fluxos de trabalho automatizados que impulsionam vendas e atendimento ao cliente, eliminando tarefas repetitivas e aumentando a eficiência.",
     icon: FiActivity,
-    image: "/features/automations.svg",
+    image: "/features/automations-2.svg",
     benefits: [
       "Campanhas de marketing automatizadas",
       "Nutrição de leads sem intervenção manual",
