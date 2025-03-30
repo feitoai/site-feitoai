@@ -107,9 +107,9 @@ export function Navbar() {
             className="flex items-center"
             onClick={(e) => handleHashLinkClick(e, "/")}
           >
-            <div className="relative w-12 h-12">
+            <div className="relative w-16 h-16">
               <img 
-                src="/feitoai-icon.svg" 
+                src="/logos/icone_para_fundo_branco.svg"   
                 alt="FeitoAI Logo" 
                 className="w-full h-full object-contain" 
               />
