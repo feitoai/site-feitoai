@@ -3,6 +3,7 @@ import { Inter, Outfit, Poppins } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ChatWidget } from "@/components/chat-widget";
+import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });
@@ -60,6 +61,24 @@ export default function RootLayout({
           {children}
           <ChatWidget />
         </ThemeProvider>
+        <Script id="chatwoot-script" strategy="afterInteractive">
+          {`
+            (function(d,t) {
+              var BASE_URL="https://chat.feitoai.site";
+              var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+              g.src=BASE_URL+"/packs/js/sdk.js";
+              g.defer = true;
+              g.async = true;
+              s.parentNode.insertBefore(g,s);
+              g.onload=function(){
+                window.chatwootSDK.run({
+                  websiteToken: 'wwGxDgLST7mnZmGVC5jcCGqS',
+                  baseUrl: BASE_URL
+                })
+              }
+            })(document,"script");
+          `}
+        </Script>
       </body>
     </html>
   );
