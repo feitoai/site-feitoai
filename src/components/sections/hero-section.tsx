@@ -147,6 +147,7 @@ export function HeroSection() {
                 fill
                 className="object-contain"
                 priority
+                quality={100}
               />
             </motion.div>
           </motion.div>
