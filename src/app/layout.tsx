@@ -7,10 +7,10 @@ import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });
-const poppins = Poppins({ 
+const poppins = Poppins({
   weight: ['300', '400', '500', '600', '700'],
-  subsets: ["latin"], 
-  variable: "--font-poppins" 
+  subsets: ["latin"],
+  variable: "--font-poppins"
 });
 
 export const metadata: Metadata = {
@@ -59,9 +59,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
-          <ChatWidget />
+          {/* <ChatWidget /> */}
         </ThemeProvider>
-        <Script id="chatwoot-script" strategy="afterInteractive">
+        {/* <Script id="chatwoot-script" strategy="afterInteractive">
           {`
             (function(d,t) {
               var BASE_URL="https://chat.feitoai.site";
@@ -78,6 +78,29 @@ export default function RootLayout({
               }
             })(document,"script");
           `}
+        </Script> */}
+        <Script id="chatwoot-script" strategy="afterInteractive">
+          {`
+    window.chatwootSettings = {
+      "position": "right",
+      "type": "expanded_bubble",
+      "launcherTitle": "Converse conosco"
+    };
+    (function(d,t) {
+      var BASE_URL="https://chat.feitoai.site";
+      var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+      g.src=BASE_URL+"/packs/js/sdk.js";
+      g.defer = true;
+      g.async = true;
+      s.parentNode.insertBefore(g,s);
+      g.onload=function(){
+        window.chatwootSDK.run({
+          websiteToken: 'wwGxDgLST7mnZmGVC5jcCGqS',
+          baseUrl: BASE_URL
+        });
+      }
+    })(document,"script");
+  `}
         </Script>
       </body>
     </html>
