@@ -70,18 +70,18 @@ const features = [
       "Integração com email e WhatsApp"
     ]
   },
-  {
-    id: "dashboards",
-    name: "Dashboards Interativos",
-    description: "Visualização de dados em tempo real que transforma informações complexas em insights acionáveis para tomada de decisões estratégicas.",
-    icon: FiPieChart,
-    image: "/features/dashboards.svg",
-    benefits: [
-      "Métricas de vendas e atendimento em tempo real",
-      "Relatórios personalizados por departamento",
-      "Exportação automática para Excel e PDF"
-    ]
-  },
+  // {
+  //   id: "dashboards",
+  //   name: "Dashboards Interativos",
+  //   description: "Visualização de dados em tempo real que transforma informações complexas em insights acionáveis para tomada de decisões estratégicas.",
+  //   icon: FiPieChart,
+  //   image: "/features/dashboards.svg",
+  //   benefits: [
+  //     "Métricas de vendas e atendimento em tempo real",
+  //     "Relatórios personalizados por departamento",
+  //     "Exportação automática para Excel e PDF"
+  //   ]
+  // },
 ];
 
 export function FeaturesSection() {
