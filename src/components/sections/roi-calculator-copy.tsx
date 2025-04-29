@@ -42,36 +42,14 @@ const AIBenefits = () => (
   </div>
 );
 
-// Componente para mostrar comparação antes/depois
-const ComparisonBadge = ({ label, current, aiEnhanced }: { label: string; current: number; aiEnhanced: number }) => (
-  <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700">
-    <div className="flex justify-between items-center mb-2">
-      <span className="text-sm text-gray-600 dark:text-gray-300">{label}</span>
-      <div className="flex items-center">
-        <span className="text-xs line-through mr-2 text-red-500">R$ {current}</span>
-        <span className="text-sm font-semibold text-green-600">R$ {aiEnhanced}</span>
-      </div>
-    </div>
-    <div className="relative pt-2">
-      <div className="overflow-hidden h-2 text-xs flex rounded bg-red-100">
-        <div style={{ width: `${(current / (current + aiEnhanced)) * 100}%` }} 
-             className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-red-500"></div>
-      </div>
-      <div className="overflow-hidden h-2 text-xs flex rounded bg-green-100 mt-1">
-        <div style={{ width: `${(aiEnhanced / (current + aiEnhanced)) * 100}%` }} 
-             className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-green-500"></div>
-      </div>
-    </div>
-  </div>
-);
 
 export function ROICalculatorCopy() {
   const [investment, setInvestment] = useState(397);
   const [currentConversionRate, setCurrentConversionRate] = useState(3);
   const [averageRevenue, setAverageRevenue] = useState(500);
   const [monthlyLeads, setMonthlyLeads] = useState(100);
-  
-  // Results
+
+  // Resultados principais
   const [roi, setRoi] = useState(0);
   const [revenueIncrease, setRevenueIncrease] = useState(0);
   const [paybackPeriod, setPaybackPeriod] = useState(0);
@@ -125,12 +103,6 @@ export function ROICalculatorCopy() {
     }
   };
 
-  // ... [manter estados anteriores]
-
-  // Adicionar novos estados para comparação
-  const [currentCosts, setCurrentCosts] = useState(0);
-  const [aiCosts, setAiCosts] = useState(0);
-
   // Função para formatar porcentagem no formato xx.xx%
   const formatPercentage = (value: number) => {
     return value.toFixed(2).replace(',', '.') + '%';
@@ -150,43 +122,46 @@ export function ROICalculatorCopy() {
     return formattedValue + '%';
   };
 
+  // Função de cálculo simplificada para maior clareza
+  const calculateROI = (monthlyLeads: number, currentConversionRate: number, averageRevenue: number, investment: number) => {
+    // PASSO 1: Calcular a receita atual
+    const clientesAtuais = monthlyLeads * (currentConversionRate / 100);
+    const receitaAtual = clientesAtuais * averageRevenue;
+    
+    // PASSO 2: Calcular a receita com IA (melhoria de 40% na conversão)
+    const melhoriaConversao = 40; // percentual fixo de melhoria
+    const novaTaxaConversao = currentConversionRate * (1 + melhoriaConversao/100);
+    const clientesComIA = monthlyLeads * (novaTaxaConversao / 100);
+    const receitaComIA = clientesComIA * averageRevenue;
+    
+    // PASSO 3: Calcular o ganho mensal
+    const ganhoMensal = receitaComIA - receitaAtual;
+    
+    // PASSO 4: Calcular o ROI anual
+    const ganhoAnual = ganhoMensal * 12;
+    const investimentoAnual = investment * 12;
+    const roiAnual = (ganhoAnual - investimentoAnual) / investimentoAnual * 100;
+    
+    // PASSO 5: Calcular o tempo de retorno (payback)
+    const paybackMeses = ganhoMensal > 0 ? investment / ganhoMensal : 0;
+    
+    // PASSO 6: Calcular o aumento percentual na conversão
+    const aumentoConversao = melhoriaConversao; // Simplificado para 40% fixo
+    
+    return {
+      roiAnual: Math.max(0, parseFloat(roiAnual.toFixed(2))),
+      ganhoMensal: Math.max(0, parseFloat(ganhoMensal.toFixed(2))),
+      paybackMeses: paybackMeses > 0 ? parseFloat(paybackMeses.toFixed(2)) : 0,
+      aumentoConversao: Math.max(0, parseFloat(aumentoConversao.toFixed(2)))
+    };
+  };
+
   useEffect(() => {
-    // Cálculos básicos
-    const currentConversionRateDecimal = currentConversionRate / 100;
-    const currentLeadsConverted = monthlyLeads * currentConversionRateDecimal;
-    const currentMonthlyRevenue = currentLeadsConverted * averageRevenue;
-    
-    // Calculando o aumento de receita com IA (assumindo um aumento na taxa de conversão)
-    const aiConversionRateIncrease = 0.5; // 50% de aumento na conversão com IA
-    const aiConversionRate = currentConversionRateDecimal * (1 + aiConversionRateIncrease);
-    const aiLeadsConverted = monthlyLeads * aiConversionRate;
-    const aiMonthlyRevenue = aiLeadsConverted * averageRevenue;
-    
-    // Calculando o aumento de receita mensal
-    const monthlyRevenueIncrease = aiMonthlyRevenue - currentMonthlyRevenue;
-    const annualRevenueIncrease = monthlyRevenueIncrease * 12;
-    
-    // Cálculo do ROI
-    const roiValue = (annualRevenueIncrease / investment) * 100;
-    console.log("ROI calculado:", roiValue); // Log para debug
-    
-    // Cálculo do período de payback (em meses)
-    const paybackPeriodValue = investment / monthlyRevenueIncrease;
-    
-    // Cálculo do aumento percentual na conversão
-    const conversionIncreaseValue = aiConversionRateIncrease * 100;
-    
-    // Atualização dos estados
-    setRoi(roiValue);
-    setRevenueIncrease(monthlyRevenueIncrease);
-    setPaybackPeriod(paybackPeriodValue);
-    setConversionIncrease(conversionIncreaseValue);
-    
-    // Custos de atendimento
-    const currentCostPerLead = 5; // R$ por lead
-    const aiCostPerLead = 2; // R$ por lead com IA
-    setCurrentCosts(monthlyLeads * currentCostPerLead);
-    setAiCosts(monthlyLeads * aiCostPerLead);
+    const resultados = calculateROI(monthlyLeads, currentConversionRate, averageRevenue, investment);
+    setRoi(resultados.roiAnual);
+    setRevenueIncrease(resultados.ganhoMensal);
+    setPaybackPeriod(resultados.paybackMeses);
+    setConversionIncrease(resultados.aumentoConversao);
   }, [investment, currentConversionRate, averageRevenue, monthlyLeads]);
 
   return (
@@ -259,7 +234,7 @@ export function ROICalculatorCopy() {
                   </h4>
                   
                   {/* Investment Input */}
-                  <div className="bg-gradient-to-br from-white/80 to-white/40 dark:from-gray-800/40 dark:to-gray-800/20 rounded-2xl p-5 shadow-sm border border-gray-100/30 dark:border-gray-700/30 backdrop-blur-sm hover:shadow-md transition-all duration-300 group mb-6">
+                  <div className="bg-gradient-to-br from-white/80 to-white/40 dark:from-gray-800/40 dark:to-gray-800/20 rounded-2xl p-5 shadow-sm border border-gray-100/30 dark:border-gray-700/30 backdrop-blur-sm hover:shadow-md transition-all duration-300 group min-h-[220px] mb-6">
                     <div className="flex justify-between items-center mb-4">
                       <label className="text-sm font-medium flex items-center">
                         <span className="w-7 h-7 rounded-full bg-gradient-to-br from-primary/20 to-primary/40 flex items-center justify-center mr-3 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:scale-110">
@@ -334,7 +309,7 @@ export function ROICalculatorCopy() {
                   </div>
 
                   {/* Conversion Rate Input */}
-                  <div className="bg-gradient-to-br from-white/80 to-white/40 dark:from-gray-800/40 dark:to-gray-800/20 rounded-2xl p-5 shadow-sm border border-gray-100/30 dark:border-gray-700/30 backdrop-blur-sm hover:shadow-md transition-all duration-300 group mb-6">
+                  <div className="bg-gradient-to-br from-white/80 to-white/40 dark:from-gray-800/40 dark:to-gray-800/20 rounded-2xl p-5 shadow-sm border border-gray-100/30 dark:border-gray-700/30 backdrop-blur-sm hover:shadow-md transition-all duration-300 group min-h-[220px] mb-6">
                     <div className="flex justify-between items-center mb-4">
                       <label className="text-sm font-medium flex items-center">
                         <span className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-400/20 to-blue-600/40 flex items-center justify-center mr-3 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:scale-110">
@@ -409,7 +384,7 @@ export function ROICalculatorCopy() {
                   </div>
                   
                   {/* Average Revenue Input */}
-                  <div className="bg-gradient-to-br from-white/80 to-white/40 dark:from-gray-800/40 dark:to-gray-800/20 rounded-2xl p-5 shadow-sm border border-gray-100/30 dark:border-gray-700/30 backdrop-blur-sm hover:shadow-md transition-all duration-300 group mb-6">
+                  <div className="bg-gradient-to-br from-white/80 to-white/40 dark:from-gray-800/40 dark:to-gray-800/20 rounded-2xl p-5 shadow-sm border border-gray-100/30 dark:border-gray-700/30 backdrop-blur-sm hover:shadow-md transition-all duration-300 group min-h-[220px] mb-6">
                     <div className="flex justify-between items-center mb-4">
                       <label className="text-sm font-medium flex items-center">
                         <span className="w-7 h-7 rounded-full bg-gradient-to-br from-green-400/20 to-green-600/40 flex items-center justify-center mr-3 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:scale-110">
@@ -484,7 +459,7 @@ export function ROICalculatorCopy() {
                   </div>
                   
                   {/* Monthly Leads Input */}
-                  <div className="bg-gradient-to-br from-white/80 to-white/40 dark:from-gray-800/40 dark:to-gray-800/20 rounded-2xl p-5 shadow-sm border border-gray-100/30 dark:border-gray-700/30 backdrop-blur-sm hover:shadow-md transition-all duration-300 group mb-6">
+                  <div className="bg-gradient-to-br from-white/80 to-white/40 dark:from-gray-800/40 dark:to-gray-800/20 rounded-2xl p-5 shadow-sm border border-gray-100/30 dark:border-gray-700/30 backdrop-blur-sm hover:shadow-md transition-all duration-300 group min-h-[220px] mb-6">
                     <div className="flex justify-between items-center mb-4">
                       <label className="text-sm font-medium flex items-center">
                         <span className="w-7 h-7 rounded-full bg-gradient-to-br from-purple-400/20 to-purple-600/40 flex items-center justify-center mr-3 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:scale-110">
@@ -558,11 +533,7 @@ export function ROICalculatorCopy() {
                     </div>
                   </div>
                   
-                  <ComparisonBadge 
-                    label="Custo Mensal de Atendimento" 
-                    current={currentCosts}
-                    aiEnhanced={aiCosts}
-                  />
+
                 </div>
               </div>
             </div>
@@ -579,7 +550,7 @@ export function ROICalculatorCopy() {
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-grow">
                     {/* ROI Card */}
-                    <div className="bg-gradient-to-br from-white/80 to-white/40 dark:from-gray-800/40 dark:to-gray-800/20 rounded-2xl p-5 shadow-sm border border-gray-100/30 dark:border-gray-700/30 backdrop-blur-sm hover:shadow-md transition-all duration-300 group">
+                    <div className="bg-gradient-to-br from-white/80 to-white/40 dark:from-gray-800/40 dark:to-gray-800/20 rounded-2xl p-5 shadow-sm border border-gray-100/30 dark:border-gray-700/30 backdrop-blur-sm hover:shadow-md transition-all duration-300 group min-h-[220px]">
                       <div className="flex items-center mb-4">
                         <span className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/40 flex items-center justify-center mr-3 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:scale-110">
                           <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -603,7 +574,7 @@ export function ROICalculatorCopy() {
                     </div>
                     
                     {/* Revenue Increase Card */}
-                    <div className="bg-gradient-to-br from-white/80 to-white/40 dark:from-gray-800/40 dark:to-gray-800/20 rounded-2xl p-5 shadow-sm border border-gray-100/30 dark:border-gray-700/30 backdrop-blur-sm hover:shadow-md transition-all duration-300 group">
+                    <div className="bg-gradient-to-br from-white/80 to-white/40 dark:from-gray-800/40 dark:to-gray-800/20 rounded-2xl p-5 shadow-sm border border-gray-100/30 dark:border-gray-700/30 backdrop-blur-sm hover:shadow-md transition-all duration-300 group min-h-[220px]">
                       <div className="flex items-center mb-4">
                         <span className="w-10 h-10 rounded-full bg-gradient-to-br from-green-400/20 to-green-600/40 flex items-center justify-center mr-3 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:scale-110">
                           <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -627,7 +598,7 @@ export function ROICalculatorCopy() {
                     </div>
                     
                     {/* Payback Period Card */}
-                    <div className="bg-gradient-to-br from-white/80 to-white/40 dark:from-gray-800/40 dark:to-gray-800/20 rounded-2xl p-5 shadow-sm border border-gray-100/30 dark:border-gray-700/30 backdrop-blur-sm hover:shadow-md transition-all duration-300 group">
+                    <div className="bg-gradient-to-br from-white/80 to-white/40 dark:from-gray-800/40 dark:to-gray-800/20 rounded-2xl p-5 shadow-sm border border-gray-100/30 dark:border-gray-700/30 backdrop-blur-sm hover:shadow-md transition-all duration-300 group min-h-[220px]">
                       <div className="flex items-center mb-4">
                         <span className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400/20 to-blue-600/40 flex items-center justify-center mr-3 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:scale-110">
                           <svg className="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -651,7 +622,7 @@ export function ROICalculatorCopy() {
                     </div>
                     
                     {/* Conversion Increase Card */}
-                    <div className="bg-gradient-to-br from-white/80 to-white/40 dark:from-gray-800/40 dark:to-gray-800/20 rounded-2xl p-5 shadow-sm border border-gray-100/30 dark:border-gray-700/30 backdrop-blur-sm hover:shadow-md transition-all duration-300 group">
+                    <div className="bg-gradient-to-br from-white/80 to-white/40 dark:from-gray-800/40 dark:to-gray-800/20 rounded-2xl p-5 shadow-sm border border-gray-100/30 dark:border-gray-700/30 backdrop-blur-sm hover:shadow-md transition-all duration-300 group min-h-[220px]">
                       <div className="flex items-center mb-4">
                         <span className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-400/20 to-purple-600/40 flex items-center justify-center mr-3 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:scale-110">
                           <svg className="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

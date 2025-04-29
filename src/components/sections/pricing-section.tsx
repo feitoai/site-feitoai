@@ -28,7 +28,7 @@ const plans: PricingPlan[] = [
     description: "Ideal para startups e pequenos negócios que desejam automatizar o atendimento",
     price: {
       monthly: 197,
-      annually: 2364,
+      annually: Math.round(197 * 12 * 0.85),
     },
     features: [
       { text: "FeitoChat (WhatsApp) configurado", included: true },
@@ -45,7 +45,7 @@ const plans: PricingPlan[] = [
     description: "Perfeito para empresas em expansão que buscam otimizar a experiência do cliente",
     price: {
       monthly: 497,
-      annually: 5964,
+      annually: Math.round(497 * 12 * 0.85),
     },
     features: [
       { text: "Tudo do Plano Essencial", included: true },
@@ -64,18 +64,18 @@ const plans: PricingPlan[] = [
     description: "Solução premium com recursos avançados para otimizar sua empresa.",
     price: {
       monthly: 797,
-      annually: 9564,
+      annually: Math.round(797 * 12 * 0.85),
     },
     features: [
       { text: "Tudo dos planos anteriores", included: true },
-      { text: "Número ilimitado de automações e bots", included: true },
+      { text: "Automações e bots ilimitados", included: true },
       { text: "Criação de Agentes de IA personalizados", included: true },
       { text: "Integrações específicas e complexas", included: true },
       { text: "Treinamento rápido para equipe (vídeo)", included: true },
       { text: "Implantação estratégica com time técnico dedicado", included: true },
-      { text: "Suporte premium24h", included: true },
+      { text: "Suporte premium 24h", included: true },
     ],
-    cta: "Falar com consultor",
+    cta: "Agendar Consulta",
   },
 ];
 
@@ -165,7 +165,7 @@ export function PricingSection() {
             >
               Anual
               <span className="ml-2 inline-flex items-center rounded-full bg-green-100 dark:bg-green-900 px-2 py-0.5 text-xs font-medium text-green-800 dark:text-green-200">
-                Economize 20%
+                Economize 15%
               </span>
             </span>
           </motion.div>
@@ -219,32 +219,73 @@ export function PricingSection() {
                       : "bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900"
                   }`}
                 >
-                  <h3 className="text-xl font-bold mb-1">{plan.name}</h3>
+                  <h3 className="text-xl font-bold mb-1 flex items-center justify-start text-left w-full">
+                    {plan.name}
+                    {(plan.name === "Enterprise" || plan.name === "Empresarial") && (
+                      <>
+                        <span className="hidden md:inline-flex items-center ml-2">
+                          <Tooltip content="Valor final sob consulta personalizada" position="top">
+                            <span className="cursor-pointer text-primary flex items-center">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/><path stroke="currentColor" strokeWidth="2" d="M12 8v4m0 4h.01"/></svg>
+                            </span>
+                          </Tooltip>
+                        </span>
+                        <span className="block md:hidden text-xs text-dark/60 dark:text-light/60 text-center w-full mt-1">Valor final sob consulta personalizada</span>
+                      </>
+                    )}
+                  </h3>
                   <p className="text-dark/70 dark:text-light/70 text-sm mb-4">
                     {plan.description}
                   </p>
                   <div className="mb-6">
-                    <span className="text-4xl font-bold">
-                      R${isAnnual ? (plan.price.annually / 12).toFixed(0) : plan.price.monthly}
-                    </span>
-                    <span className="text-dark/70 dark:text-light/70 ml-1">
-                      /mês
-                    </span>
-                    {isAnnual && (
-                      <p className="text-sm text-dark/60 dark:text-light/60 mt-1">
-                        Faturado anualmente como R${plan.price.annually}
-                      </p>
+                    {plan.name === "Enterprise" || plan.name === "Empresarial" ? (
+                      <div className="w-full flex flex-col items-center justify-center text-center">
+                        <span className="flex flex-row items-end justify-center w-full">
+                          <span className="text-4xl font-bold">A partir de R$797</span>
+                          <span className="text-dark/70 dark:text-light/70 ml-1">/mês</span>
+                        </span>
+                        <span className="block md:hidden text-xs text-dark/60 dark:text-light/60 text-center w-full mt-1">Valor final sob consulta personalizada</span>
+                      </div>
+                    ) : (
+                      (() => {
+                        const annualValue = +(plan.price.monthly * 12 * 0.85).toFixed(2);
+                        const monthlyAnnual = +(annualValue / 12).toFixed(2);
+                        return (
+                          <>
+                            <span className="text-4xl font-bold">
+                              R${isAnnual ? monthlyAnnual : plan.price.monthly}
+                            </span>
+                            <span className="text-dark/70 dark:text-light/70 ml-1">
+                              /mês
+                            </span>
+                            {isAnnual && (
+                              <p className="text-sm text-dark/60 dark:text-light/60 mt-1">
+                                Faturado anualmente como R${annualValue.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                              </p>
+                            )}
+                          </>
+                        );
+                      })()
                     )}
                   </div>
-                  <button
-                    className={`w-full py-3 px-4 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 button-hover-effect ${
-                      plan.popular
-                        ? "bg-gradient-to-r from-primary via-primary-light to-primary text-white shadow-2xl shadow-primary/20 bg-size-200 bg-pos-0 hover:bg-pos-100"
-                        : "bg-white dark:bg-gray-800 border border-primary/50 text-primary hover:bg-primary/10 dark:hover:bg-primary/10"
-                    }`}
-                  >
-                    {plan.cta}
-                  </button>
+                  {["Essencial ", "Profissional"].includes(plan.name) ? (
+  <a
+    href={`/contratar-plano?plano=${plan.name.toLowerCase().trim()}&periodicidade=${isAnnual ? 'anual' : 'mensal'}`}
+    className={`w-full block h-12 py-0 px-8 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 button-hover-effect text-center flex items-center justify-center leading-none ${
+      plan.popular
+        ? "bg-gradient-to-r from-primary via-primary-light to-primary text-white shadow-2xl shadow-primary/20 bg-size-200 bg-pos-0 hover:bg-pos-100"
+        : "bg-white dark:bg-gray-800 border border-primary/50 text-primary hover:bg-primary/10 dark:hover:bg-primary/10"
+    }`}
+  >
+    {plan.cta}
+  </a>
+) : (
+  <button
+    className="w-full h-12 py-0 px-8 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 button-hover-effect text-center flex items-center justify-center leading-none bg-white dark:bg-gray-800 border border-primary/50 text-primary hover:bg-primary/10 dark:hover:bg-primary/10"
+  >
+    {plan.cta}
+  </button>
+)}
                 </div>
                 <div className={`p-6 border-t border-gray-200 dark:border-gray-800 flex-grow ${
                   plan.popular
@@ -285,6 +326,19 @@ export function PricingSection() {
                             <div className="inline-flex items-center justify-center w-5 h-5 ml-1.5 rounded-full bg-primary/10 hover:bg-primary/20 transition-colors">
                               <FiInfo className="w-3.5 h-3.5 text-primary" />
                             </div>
+                      <>{(plan.name === "Enterprise" || plan.name === "Empresarial") && (
+                        <div className="w-full flex flex-col items-center mt-1">
+                          <span className="hidden md:inline-flex items-center text-xs text-dark/60 dark:text-light/60">
+                            <Tooltip content="Valor final sob consulta personalizada" position="top">
+                              <span className="cursor-pointer text-primary ml-1 flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/><path stroke="currentColor" strokeWidth="2" d="M12 8v4m0 4h.01"/></svg>
+                                <span className="ml-1">Valor final sob consulta personalizada</span>
+                              </span>
+                            </Tooltip>
+                          </span>
+                          <span className="block md:hidden text-xs text-dark/60 dark:text-light/60 text-center">Valor final sob consulta personalizada</span>
+                        </div>
+                      )}</>
                           </Tooltip>
                         )}
                       </li>

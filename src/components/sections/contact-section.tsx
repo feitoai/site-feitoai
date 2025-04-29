@@ -23,27 +23,61 @@ export function ContactSection() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    if (name === "phone") {
+      // Remove tudo que não for dígito
+      let onlyNumbers = value.replace(/\D/g, "");
+      // Aplica a máscara (99) 99999-9999
+      if (onlyNumbers.length > 0) {
+        onlyNumbers = onlyNumbers.slice(0, 11);
+        let formatted = onlyNumbers;
+        if (onlyNumbers.length > 2) {
+          formatted = `(${onlyNumbers.slice(0, 2)}) ${onlyNumbers.slice(2)}`;
+        }
+        if (onlyNumbers.length > 7) {
+          formatted = `(${onlyNumbers.slice(0, 2)}) ${onlyNumbers.slice(2, 7)}-${onlyNumbers.slice(7)}`;
+        }
+        setFormData((prev) => ({
+          ...prev,
+          [name]: formatted,
+        }));
+      } else {
+        setFormData((prev) => ({
+          ...prev,
+          [name]: "",
+        }));
+      }
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormStatus("submitting");
-    
-    // Simulate form submission
-    setTimeout(() => {
-      setFormStatus("success");
-      setFormData({
-        name: "",
-        email: "",
-        phone: "",
-        company: "",
-        message: "",
+    try {
+      const res = await fetch("/api/contact-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
       });
-    }, 1500);
+      if (res.ok) {
+        setFormStatus("success");
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          company: "",
+          message: "",
+        });
+      } else {
+        setFormStatus("error");
+      }
+    } catch (err) {
+      setFormStatus("error");
+    }
   };
 
   const containerVariants = {
@@ -85,7 +119,7 @@ export function ContactSection() {
           animate={inView ? "visible" : "hidden"}
           className="grid grid-cols-1 lg:grid-cols-2 gap-12"
         >
-          <div>
+          <div className="flex flex-col justify-center h-full">
             <motion.h2
               variants={itemVariants}
               className="text-3xl md:text-4xl font-bold mb-4"
@@ -116,11 +150,11 @@ export function ContactSection() {
                 </div>
                 <div>
                   <h3 className="font-medium mb-1">Telefone</h3>
-                  <p className="text-dark/70 dark:text-light/70">+55 (11) 4002-8922</p>
+                  <p className="text-dark/70 dark:text-light/70">+55 (83) 99673-3817</p>
                 </div>
               </div>
               
-              <div className="flex items-start">
+              {/* <div className="flex items-start">
                 <div className="w-12 h-12 bg-primary/10 dark:bg-primary/20 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
                   <FiMapPin className="w-5 h-5 text-primary" />
                 </div>
@@ -131,7 +165,7 @@ export function ContactSection() {
                     São Paulo - SP, 01310-100
                   </p>
                 </div>
-              </div>
+              </div> */}
             </motion.div>
             
             <motion.div
@@ -178,7 +212,7 @@ export function ContactSection() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium mb-1">
-                      Nome completo *
+                      Nome completo <span className="text-primary">*</span>
                     </label>
                     <input
                       type="text"
@@ -187,6 +221,7 @@ export function ContactSection() {
                       value={formData.name}
                       onChange={handleChange}
                       required
+                      maxLength={60}
                       className="w-full px-4 py-3 bg-white dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
                       placeholder="Seu nome"
                     />
@@ -194,7 +229,7 @@ export function ContactSection() {
                   
                   <div>
                     <label htmlFor="email" className="block text-sm font-medium mb-1">
-                      Email *
+                      Email <span className="text-primary">*</span>
                     </label>
                     <input
                       type="email"
@@ -203,6 +238,7 @@ export function ContactSection() {
                       value={formData.email}
                       onChange={handleChange}
                       required
+                      maxLength={80}
                       className="w-full px-4 py-3 bg-white dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
                       placeholder="seu@email.com"
                     />
@@ -212,7 +248,7 @@ export function ContactSection() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label htmlFor="phone" className="block text-sm font-medium mb-1">
-                      Telefone
+                      Telefone <span className="text-primary">*</span>
                     </label>
                     <input
                       type="tel"
@@ -220,6 +256,7 @@ export function ContactSection() {
                       name="phone"
                       value={formData.phone}
                       onChange={handleChange}
+                      required
                       className="w-full px-4 py-3 bg-white dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
                       placeholder="(00) 00000-0000"
                     />
@@ -227,7 +264,7 @@ export function ContactSection() {
                   
                   <div>
                     <label htmlFor="company" className="block text-sm font-medium mb-1">
-                      Empresa
+                      Empresa <span className="text-primary">*</span>
                     </label>
                     <input
                       type="text"
@@ -235,6 +272,7 @@ export function ContactSection() {
                       name="company"
                       value={formData.company}
                       onChange={handleChange}
+                      required
                       className="w-full px-4 py-3 bg-white dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
                       placeholder="Nome da empresa"
                     />
@@ -243,7 +281,7 @@ export function ContactSection() {
                 
                 <div>
                   <label htmlFor="message" className="block text-sm font-medium mb-1">
-                    Mensagem *
+                    Mensagem <span className="text-primary">*</span>
                   </label>
                   <textarea
                     id="message"
@@ -265,7 +303,7 @@ export function ContactSection() {
                     className="w-4 h-4 text-primary bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-700 rounded focus:ring-primary"
                   />
                   <label htmlFor="privacy" className="ml-2 text-sm text-dark/70 dark:text-light/70">
-                    Concordo com a <Link href="/privacidade" className="text-primary hover:underline">Política de Privacidade</Link>
+                    Concordo com a <Link href="/politica-de-privacidade" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">Política de Privacidade</Link> <span className="text-primary">*</span>
                   </label>
                 </div>
                 
