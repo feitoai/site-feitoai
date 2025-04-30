@@ -47,7 +47,7 @@ export function Tooltip({
               animate={{ opacity: 1, scale: 1, y: 0, x: 0 }}
               exit={{ opacity: 0, scale: 0.8 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
-              className={`absolute z-50 px-3 py-2 text-sm font-medium text-white bg-gray-900 dark:bg-gray-800 rounded-md shadow-lg backdrop-blur-sm border border-gray-700/30 dark:border-gray-600/30 whitespace-normal max-w-[250px] ${positionStyles[position]}`}
+              className={`absolute z-50 px-3 py-2 text-sm font-medium text-white bg-gray-900 dark:bg-gray-800 rounded-md shadow-lg backdrop-blur-sm border border-gray-700/30 dark:border-gray-600/30 whitespace-nowrap break-words max-w-xs overflow-visible ${positionStyles[position]}`}
             >
               {content}
               <span

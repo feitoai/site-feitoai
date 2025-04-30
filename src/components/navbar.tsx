@@ -10,9 +10,8 @@ const navLinks = [
   { name: "Início", href: "#hero" },
   { name: "Recursos", href: "#recursos" },
   { name: "FeitoChat", href: "#feitochat" },
+  { name: "Assistente", href: "#assistente" },
   { name: "Preços", href: "#precos" },
-  //{ name: "Calculadora ROI_teste", href: "/#roi" },
-  { name: "Calculadora ROI", href: "#roi-calculator-copy" },
   { name: "Integrações", href: "#integracoes" },
   { name: "FAQ", href: "#faq" },
   { name: "Contato", href: "#contato" },
@@ -54,18 +53,20 @@ export function Navbar() {
     // Only apply to hash links
     if (href.startsWith('#')) {
       e.preventDefault();
+      if (window.location.pathname !== '/') {
+        // Se não está na home, redireciona para home com hash
+        window.location.href = '/' + href;
+        return;
+      }
       const targetId = href.replace('#', '');
       const targetElement = document.getElementById(targetId);
-      
       if (targetElement) {
         // Close mobile menu if open
         if (mobileMenuOpen) {
           setMobileMenuOpen(false);
         }
-        
         // Update active link
         setActiveLink(href);
-        
         // Scroll to the element with smooth behavior
         window.scrollTo({
           top: targetElement.offsetTop - 80, // Offset for the fixed header
@@ -126,26 +127,40 @@ export function Navbar() {
                   transition={{ duration: 0.3, delay: 0.1 }}
                   className="mx-3"
                 >
-                  <Link
-                    href={link.href}
-                    onClick={(e) => handleHashLinkClick(e, link.href)}
-                    className={`text-sm font-medium transition-colors duration-300 hover:text-primary relative ${
-                      activeLink === link.href
-                        ? "text-primary"
-                        : "text-gray-700 dark:text-gray-300"
-                    }`}
-                  >
-                    {link.name}
-                    {activeLink === link.href && (
-                      <motion.span
-                        layoutId="activeSection"
-                        className="absolute bottom-0 left-0 w-full h-0.5 bg-primary rounded-full"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 0.3 }}
-                      />
-                    )}
-                  </Link>
+                  {link.href === "/politica-de-privacidade" ? (
+                    <Link
+                      href={link.href}
+                      className={`text-sm font-medium transition-colors duration-300 hover:text-primary relative ${
+                        activeLink === link.href
+                          ? "text-primary"
+                          : "text-gray-700 dark:text-gray-300"
+                      }`}
+                      prefetch={false}
+                    >
+                      {link.name}
+                    </Link>
+                  ) : (
+                    <Link
+                      href={link.href}
+                      onClick={(e) => handleHashLinkClick(e, link.href)}
+                      className={`text-sm font-medium transition-colors duration-300 hover:text-primary relative ${
+                        activeLink === link.href
+                          ? "text-primary"
+                          : "text-gray-700 dark:text-gray-300"
+                      }`}
+                    >
+                      {link.name}
+                      {activeLink === link.href && (
+                        <motion.span
+                          layoutId="activeSection"
+                          className="absolute bottom-0 left-0 w-full h-0.5 bg-primary rounded-full"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ duration: 0.3 }}
+                        />
+                      )}
+                    </Link>
+                  )}
                 </motion.div>
               ))}
             </nav>
