@@ -67,46 +67,28 @@ export function ROICalculator() {
   };
 
   useEffect(() => {
-    // Calculate ROI metrics
+    // Receita mensal atual
     const currentMonthlyConversions = (monthlyLeads * currentConversionRate) / 100;
     const currentMonthlyRevenue = currentMonthlyConversions * averageRevenue;
-    
-    // FeitoAI improvement factors - more realistic and variable based on inputs
-    // Higher improvement for lower initial conversion rates (diminishing returns)
-    const conversionImprovementFactor = 1.5 - (currentConversionRate * 0.05);
-    
-    // Ensure minimum improvement of 20% and maximum of 60%
-    const actualImprovementFactor = Math.max(1.2, Math.min(1.6, conversionImprovementFactor));
-    
-    const improvedConversionRate = currentConversionRate * actualImprovementFactor;
+
+    // Receita mensal com IA (aumento de 50% na taxa de conversão)
+    const improvedConversionRate = currentConversionRate * 1.5;
     const improvedMonthlyConversions = (monthlyLeads * improvedConversionRate) / 100;
-    
-    // Include customer retention improvement (5-15% based on average revenue)
-    const retentionImprovementFactor = 1 + (0.05 + (averageRevenue / 10000));
-    const improvedMonthlyRevenue = improvedMonthlyConversions * averageRevenue * retentionImprovementFactor;
-    
+    const improvedMonthlyRevenue = improvedMonthlyConversions * averageRevenue;
+
+    // Aumento de receita mensal
     const monthlyRevenueIncrease = improvedMonthlyRevenue - currentMonthlyRevenue;
-    const annualRevenueIncrease = monthlyRevenueIncrease * 12;
-    
-    // Include cost savings from automation (15-30% of investment based on leads volume)
-    const costSavingsFactor = 0.15 + (monthlyLeads / 1000);
-    const monthlyCostSavings = investment * Math.min(0.3, costSavingsFactor);
-    const annualCostSavings = monthlyCostSavings * 12;
-    
-    // Total benefit includes both revenue increase and cost savings
-    const totalAnnualBenefit = annualRevenueIncrease + annualCostSavings;
-    
-    // ROI calculation: (Total Benefit - Cost of Investment) / Cost of Investment
+
+    // ROI anual (%): ((aumento de receita * 12) - (investimento * 12)) / (investimento * 12) * 100
     const annualInvestment = investment * 12;
-    const calculatedRoi = (totalAnnualBenefit - annualInvestment) / annualInvestment * 100;
-    
-    // Payback period in months (considering both revenue increase and cost savings)
-    const monthlyBenefit = monthlyRevenueIncrease + monthlyCostSavings;
-    const calculatedPaybackPeriod = investment / monthlyBenefit;
-    
-    const calculatedConversionIncrease = (improvedConversionRate - currentConversionRate) / currentConversionRate * 100;
-    
-    // Format all values to have two decimal places
+    const calculatedRoi = ((monthlyRevenueIncrease * 12) - annualInvestment) / annualInvestment * 100;
+
+    // Payback em meses
+    const calculatedPaybackPeriod = monthlyRevenueIncrease > 0 ? investment / monthlyRevenueIncrease : 0;
+
+    // Aumento percentual de conversão
+    const calculatedConversionIncrease = currentConversionRate > 0 ? ((improvedConversionRate - currentConversionRate) / currentConversionRate) * 100 : 0;
+
     setRoi(Math.max(0, parseFloat(calculatedRoi.toFixed(2))));
     setRevenueIncrease(Math.max(0, parseFloat(monthlyRevenueIncrease.toFixed(2))));
     setPaybackPeriod(calculatedPaybackPeriod > 0 ? parseFloat(calculatedPaybackPeriod.toFixed(2)) : 0);

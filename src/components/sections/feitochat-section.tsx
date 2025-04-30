@@ -22,7 +22,7 @@ const features: Feature[] = [
   },
   {
     id: "unified-inbox",
-    name: "Caixa de entrada unificada",
+    name: "Centralização dos canais de atendimento",
     description: "Gerencie mensagens de WhatsApp, Instagram, Facebook e Telegram em uma única interface intuitiva e organizada.",
     icon: FiMessageSquare,
   },
@@ -161,8 +161,8 @@ export function FeitoChatSection() {
                     >
                       <span className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary mr-4 group-hover:bg-primary group-hover:text-white transition-all duration-300">✓</span>
                       <div>
-                        <h4 className="font-semibold text-lg text-gradient mb-1">Caixa de entrada unificada</h4>
-                        <p className="text-dark/70 dark:text-light/70">Gerencie todas as conversas em um único lugar, independente do canal de origem.</p>
+                        <h4 className="font-semibold text-lg text-gradient mb-1">Centralização dos canais de atendimento</h4>
+                        <p className="text-dark/70 dark:text-light/70">Atenda clientes de WhatsApp, Instagram, Facebook, E-mail, Webchat, Telegram, entre outros, tudo em um só lugar.</p>
                       </div>
                     </motion.li>
                     <motion.li 
@@ -173,8 +173,9 @@ export function FeitoChatSection() {
                     >
                       <span className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary mr-4 group-hover:bg-primary group-hover:text-white transition-all duration-300">✓</span>
                       <div>
-                        <h4 className="font-semibold text-lg text-gradient mb-1">Sem cobrança por mensagem</h4>
-                        <p className="text-dark/70 dark:text-light/70">Modelo de preço fixo mensal, sem surpresas na sua fatura.</p>
+                        <h4 className="font-semibold text-lg text-gradient mb-1">Gestão de equipes</h4>
+                        <p className="text-dark/70 dark:text-light/70">Controle filas de atendimento, atribua conversas automaticamente e analise o desempenho de agentes.
+Controle filas de atendimento, atribua conversas automaticamente e analise o desempenho de agentes.</p>
                       </div>
                     </motion.li>
                     <motion.li 
@@ -197,8 +198,8 @@ export function FeitoChatSection() {
                     >
                       <span className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary mr-4 group-hover:bg-primary group-hover:text-white transition-all duration-300">✓</span>
                       <div>
-                        <h4 className="font-semibold text-lg text-gradient mb-1">Integrações nativas</h4>
-                        <p className="text-dark/70 dark:text-light/70">Conecte-se facilmente com suas ferramentas favoritas de CRM, e-commerce e marketing.</p>
+                        <h4 className="font-semibold text-lg text-gradient mb-1">Relatórios e métricas</h4>
+                        <p className="text-dark/70 dark:text-light/70">Dashboards detalhados de volume de atendimentos, tempo de resposta, satisfação dos clientes, etc.</p>
                       </div>
                     </motion.li>
                   </ul>
