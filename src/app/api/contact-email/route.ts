@@ -4,7 +4,7 @@ import nodemailer from 'nodemailer';
 export async function POST(req: NextRequest) {
   try {
     const data = await req.json();
-    const { name, email, phone, company, message } = data;
+    const { name, email, phone, company, message, horario } = data;
 
     // Configure seu transporte SMTP (exemplo com Gmail)
     const transporter = nodemailer.createTransport({
@@ -19,9 +19,8 @@ export async function POST(req: NextRequest) {
       from: 'feitoai.tech@gmail.com',
       to: 'feitoai.tech@gmail.com',
       subject: `Novo contato do site - ${name}`,
-      text: `Nome: ${name}\nEmail: ${email}\nTelefone: ${phone}\nEmpresa: ${company}\nMensagem: ${message}`,
-      html: `<b>Nome:</b> ${name}<br/><b>Email:</b> ${email}<br/><b>Telefone:</b> ${phone}<br/><b>Empresa:</b> ${company}<br/><b>Mensagem:</b> ${message}`,
-    });
+      text: `Nome: ${name}\nEmail: ${email}\nTelefone: ${phone}\nEmpresa: ${company}\nMensagem: ${message}${horario ? `\nHorário preferido: ${horario}` : ''}`,
+      html: `<b>Nome:</b> ${name}<br/><b>Email:</b> ${email}<br/><b>Telefone:</b> ${phone}<br/><b>Empresa:</b> ${company}<br/><b>Mensagem:</b> ${message}${horario ? `<br/><b>Horário preferido:</b> ${horario}` : ''}`,    });
 
     return NextResponse.json({ ok: true });
   } catch (error) {
