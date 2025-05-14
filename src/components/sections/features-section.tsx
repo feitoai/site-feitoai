@@ -23,11 +23,11 @@ const features = [
     ]
   },
   {
-    id: "ai-service",
+    id: "atendimento-com-ia",
     name: "Atendimento com IA",
     description: "Combine o melhor da inteligência artificial com o toque humano. Nossa solução identifica quando transferir conversas automaticamente para sua equipe.",
     icon: FiUsers,
-    image: "/features/ai-service.svg",
+    image: "/features/atendimento-com-ia.svg",
     benefits: [
       "Respostas personalizadas para cada tipo de cliente",
       "Transferência inteligente para atendentes humanos",
