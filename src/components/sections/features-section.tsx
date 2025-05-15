@@ -11,11 +11,11 @@ import { AnimatePresence } from "framer-motion";
 
 const features = [
   {
-    id: "chatbot",
+    id: "chatbot-inteligente",
     name: "Chatbot Inteligente",
     description: "Atendimento automatizado 24/7 com tecnologia avançada que compreende o contexto das conversas e aprende com cada interação.",
     icon: FiMessageCircle,
-    image: "/features/chatbot.svg",
+    image: "/features/chatbot-inteligente.svg",
     benefits: [
       "Atendimento instantâneo 24 horas por dia",
       "Redução de 70% nos custos de atendimento",
