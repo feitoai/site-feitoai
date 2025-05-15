@@ -25,19 +25,19 @@ export function Navbar() {
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
-      
+
       // Update active link based on scroll position
       const sections = document.querySelectorAll('section[id]');
       sections.forEach(section => {
         const sectionTop = (section as HTMLElement).offsetTop - 100;
         const sectionHeight = (section as HTMLElement).offsetHeight;
         const sectionId = section.getAttribute('id');
-        
+
         if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
           setActiveLink(`#${sectionId}`);
         }
       });
-      
+
       // If at the top of the page, set active to home
       if (window.scrollY < 100) {
         setActiveLink("/");
@@ -95,11 +95,10 @@ export function Navbar() {
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
           ? "bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg shadow-md"
           : "bg-transparent"
-      }`}
+        }`}
     >
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16 md:h-20">
@@ -109,10 +108,10 @@ export function Navbar() {
             onClick={(e) => handleHashLinkClick(e, "/")}
           >
             <div className="relative w-16 h-16">
-              <img 
-                src="/logos/icone_para_fundo_branco.svg"   
-                alt="FeitoAI Logo" 
-                className="w-full h-full object-contain" 
+              <img
+                src="/logos/icone_para_fundo_branco.svg"
+                alt="FeitoAI Logo"
+                className="w-full h-full object-contain"
               />
             </div>
           </Link>
@@ -130,11 +129,10 @@ export function Navbar() {
                   {link.href === "/politica-de-privacidade" ? (
                     <Link
                       href={link.href}
-                      className={`text-sm font-medium transition-colors duration-300 hover:text-primary relative ${
-                        activeLink === link.href
+                      className={`text-sm font-medium transition-colors duration-300 hover:text-primary relative ${activeLink === link.href
                           ? "text-primary"
                           : "text-gray-700 dark:text-gray-300"
-                      }`}
+                        }`}
                       prefetch={false}
                     >
                       {link.name}
@@ -143,11 +141,10 @@ export function Navbar() {
                     <Link
                       href={link.href}
                       onClick={(e) => handleHashLinkClick(e, link.href)}
-                      className={`text-sm font-medium transition-colors duration-300 hover:text-primary relative ${
-                        activeLink === link.href
+                      className={`text-sm font-medium transition-colors duration-300 hover:text-primary relative ${activeLink === link.href
                           ? "text-primary"
                           : "text-gray-700 dark:text-gray-300"
-                      }`}
+                        }`}
                     >
                       {link.name}
                       {activeLink === link.href && (
@@ -173,14 +170,15 @@ export function Navbar() {
               >
                 <ThemeToggle />
               </motion.div>
-              
+
               <Link
-                href="/login"
+                href="https://chat.feitoai.com.br/app/login"
+                target="_blank"
                 className="hidden md:inline-flex items-center justify-center px-6 py-2 bg-transparent border border-primary/50 text-primary hover:bg-primary/10 dark:hover:bg-primary/10 font-medium rounded-full transition-all duration-300 transform hover:scale-105"
               >
                 Entrar
               </Link>
-              
+
               <Link
                 href="#contato"
                 onClick={(e) => handleHashLinkClick(e, "#contato")}
@@ -188,7 +186,7 @@ export function Navbar() {
               >
                 Iniciar Teste <FiChevronRight className="ml-1" />
               </Link>
-              
+
               {/* Mobile Menu Button */}
               <motion.button
                 initial={{ opacity: 0, scale: 0.8 }}
@@ -223,7 +221,7 @@ export function Navbar() {
               className="fixed inset-0 bg-black z-30 md:hidden"
               onClick={() => setMobileMenuOpen(false)}
             />
-            
+
             <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -241,11 +239,10 @@ export function Navbar() {
                         handleHashLinkClick(e, link.href);
                         setMobileMenuOpen(false);
                       }}
-                      className={`px-4 py-2 rounded-lg transition-colors ${
-                        activeLink === link.href
+                      className={`px-4 py-2 rounded-lg transition-colors ${activeLink === link.href
                           ? "bg-primary/10 text-primary font-medium"
                           : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-                      }`}
+                        }`}
                     >
                       {link.name}
                     </Link>
